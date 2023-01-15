@@ -15,4 +15,5 @@ fn match_test_string_one(x:&str) -> String{
 #[test]
 fn test(){
     println!("{:?}",match_test_string_one("test12"));
+    println!("{:?}",match_test_string(Some(String::from("好说"))));
 }

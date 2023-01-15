@@ -10,6 +10,9 @@ fn option_test_plus(x:Option<i32>) -> i32{
         Some(i) => i+1
     }
 }
+//写一个Sting类型的模式匹配例子
+
+
 #[test]
 fn test(){
     // option_test_plus_one(Some(5));

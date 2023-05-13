@@ -9,5 +9,9 @@ mod thread_learning;
 mod variable_mut_learning;
 fn main() {
     println!("Hello, world!");
-    io_learning::read_file_test();
+    // io_learning::read_file_test();
+    // for number in (1..4).rev() {
+    //     println!("{number}!");
+    // }
+    // println!("LIFTOFF!!!");
 }

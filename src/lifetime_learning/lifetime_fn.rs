@@ -39,6 +39,20 @@ fn static_lifetime_test() {
     fn print_it2<T: Debug + 'static>(input: &T) {
         println!("3 'static value passed in is: {:?}", input);
     }
+
+    fn lifetime_test<'a>() -> &'a i32{
+        let x:&'a i32 = &10;
+        
+        print!("{x}");
+        x
+    }
+    fn lifetime_test_one<'a>(y:&'a mut String) -> &String{
+        let x:String = String::from("hello");
+        print!("{x}");
+        *y = x;
+        y
+    }
+
     /**
      *以下代码会引起生命周期的编译错误
      */
@@ -48,6 +62,7 @@ fn static_lifetime_test() {
     print_it(i);
     print_it1(i);
     print_it2(&i);
+    lifetime_test();
 }
 #[test]
 fn test() {

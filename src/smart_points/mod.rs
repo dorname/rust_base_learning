@@ -4,3 +4,8 @@ mod rc;
 pub use rc::*;
 mod cell;
 pub use cell::*;
+mod ref_cell;
+pub use ref_cell::*;
+mod weak;
+mod cow;
+mod pin;

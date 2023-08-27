@@ -9,6 +9,7 @@ mod ownership_learning;
 mod thread_learning;
 mod variable_mut_learning;
 mod smart_points;
+mod stack_learning;
 fn main() {
     println!("Hello, world!");
     // io_learning::read_file_test();

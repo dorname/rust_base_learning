@@ -1,0 +1,5 @@
+1,Ext.define('MyDinary.view.StudyPanel', {
+2,    extend:"Ext.panel.Panel",
+3,    layout:"fit",
+4,    title:"测试"
+5,});

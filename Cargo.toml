@@ -9,5 +9,6 @@ edition = "2021"
 members = [".","p2p","tokio_learning"]
 
 [dependencies]
+tokio = {version ="1.29.1",features = ["full"]  }
 p2p = {path = "p2p"}
 tokio_learning = {path = "tokio_learning"}

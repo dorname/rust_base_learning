@@ -1,15 +1,23 @@
 
 use std::net::TcpStream;
 use std::io::{self, Error, Read, Write};
+use serde::{Serialize, Deserialize};
 use std::str;
 
+#[derive(Serialize, Deserialize)]
+struct Message {
+    data: String,
+}
+
 struct Client;
+
 impl Client {
     fn new()->Self{
         Self{}
     }
     fn connect(addr:String,msg:String)-> io::Result<()>{
         let client = Client::new();
+        
         let mut stream = TcpStream::connect(&addr)?;
         println!("Successfully connected to server {}",addr);
         client.send(msg, &mut stream);
@@ -23,7 +31,7 @@ impl Client {
         stream.write_all(msg.as_bytes())?;
         Ok(())
     }
-    
+
     fn get_response(&self,stream:&mut TcpStream)->Result<String, Error>{
         let mut data = [0 as u8; 50]; // Use a buffer larger than the message to receive the server's response.
         let bytes_read = stream.read(&mut data)?;
@@ -34,6 +42,6 @@ impl Client {
 
 #[test]
 fn test_client() {
-    Client::connect("127.0.0.1:12345".to_owned(),"Hi\n".to_owned());
+    Client::connect("127.0.0.1:12345".to_owned(),"Hi".to_owned());
 }
 

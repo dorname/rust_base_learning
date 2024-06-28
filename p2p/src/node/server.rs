@@ -2,19 +2,21 @@ use std::io::{self, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 
+use log::info;
+
+use crate::initLog;
+
 #[derive(Clone, Copy)]
-struct Server;
+pub struct Server;
 
 impl Server {
-    fn new()-> Self {
-        Self{
-
-        }
+    fn new() -> Self {
+        Self {}
     }
-    fn init(add: String){
+    pub fn init(add: String) {
         let server = Arc::new(Server::new());
         let listener = TcpListener::bind(&add).unwrap();
-        println!("Server listening on {}",add);
+        println!("Server listening on {}", add);
 
         for stream in listener.incoming() {
             match stream {
@@ -39,15 +41,16 @@ impl Server {
                 return;
             }
         };
-
-        println!("Received from client: {}", message);
+        
+        info!("ip地址为{}",stream.peer_addr().unwrap());
+        info!("Received from client: {}", message);
 
         // 保存消息，这里我们仅将其打印出来
         // 在实际应用中，你可能会将其存储在文件、数据库或其他存储系统中
         let saved_message = message;
 
         // 向客户端发送确认消息
-        let response = format!("Message received  \"{}\"", "ok");
+        let response = format!("Message received:\"{}\" ", saved_message);
         if let Err(e) = stream.write_all(response.as_bytes()) {
             eprintln!("Failed to send confirmation: {}", e);
         }
@@ -62,6 +65,7 @@ impl Server {
             }
             message.push_str(&String::from_utf8_lossy(&buffer[..bytes_read]));
             if message.ends_with('\n') {
+                // info!()
                 break; // 消息结束
             }
         }
@@ -71,5 +75,7 @@ impl Server {
 
 #[test]
 fn test_server() {
-    Server::init("127.0.0.1:12345".to_owned());
+    initLog();
+    info!("初始化p2p服务端节点");
+    Server::init("192.168.21.233:12345".to_owned());
 }

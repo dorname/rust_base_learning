@@ -10,5 +10,7 @@ members = [".","p2p", "smart_point","tokio_learning"]
 
 [dependencies]
 tokio = {version ="1.29.1",features = ["full"]  }
-p2p = {path = "p2p"}
-tokio_learning = {path = "tokio_learning"}
+# p2p = {path = "p2p"}
+# tokio_learning = {path = "tokio_learning"}
+log = "0.4.22"
+log4rs = "1.3.0"

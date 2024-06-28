@@ -11,6 +11,12 @@ mod variable_mut_learning;
 mod smart_points;
 mod stack_learning;
 mod array_learning;
+
+use log::*;
+use log4rs;
+fn initLog(){
+    log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
+}
 // use p2p::add;
 fn main() {
     println!("Hello, world!");
@@ -22,6 +28,7 @@ fn main() {
     // let nums:Vec<i32> = (0..100).collect();
     // println!("{:?}",nums);
     let arr:Vec<_> = ",32".split(',').collect();
-    
+    initLog();
+    info!("test");
     println!("{:?}",arr);
 }

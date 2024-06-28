@@ -2,6 +2,11 @@ use std::io::{self, Error, Read, Write};
 use std::net::TcpStream;
 use std::str;
 
+#[derive(Serialize, Deserialize)]
+struct Message {
+    data: String,
+}
+
 pub struct Client;
 impl Client {
     fn new() -> Self {
@@ -9,6 +14,7 @@ impl Client {
     }
     fn connect(addr: String, msg: String) -> io::Result<()> {
         let client = Client::new();
+        
         let mut stream = TcpStream::connect(&addr)?;
         println!("Successfully connected to server {}", addr);
         client.send(msg, &mut stream);

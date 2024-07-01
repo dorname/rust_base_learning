@@ -2,11 +2,6 @@ use std::io::{self, Error, Read, Write};
 use std::net::TcpStream;
 use std::str;
 
-#[derive(Serialize, Deserialize)]
-struct Message {
-    data: String,
-}
-
 pub struct Client;
 impl Client {
     fn new() -> Self {

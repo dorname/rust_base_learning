@@ -4,7 +4,7 @@ use log4rs::append::rolling_file::policy::compound::trigger::size;
 
 use crate::const_var::*;
 #[derive(Debug)]
-struct Evm {
+pub struct Evm {
     //以太坊虚拟机字节码
     code: Vec<u8>,
     //程序计数器
@@ -20,15 +20,19 @@ struct Evm {
 ///    计数器初始值为0
 ///    堆栈初始化为空
 impl Evm {
-    ///初始化虚拟机
-    fn new(code:Vec<u8>) -> Self{
+    /// 初始化虚拟机
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// ```
+    pub fn new(code:Vec<u8>) -> Self{
         init_log();
         Evm { code: code, pc: 0, stack: Vec::<u32>::new() }
     }   
 
     /// 获取当前待执行的指令
-    fn get_current_instruction(&mut self) -> u8 {
-      
+    pub fn get_current_instruction(&mut self) -> u8 {
         let &op:&u8 = self.code.get(self.pc).unwrap();
         info!("当前执行的指令为{}",op);
         self.pc += 1;
@@ -36,7 +40,7 @@ impl Evm {
         return op.clone();
     }
 
-    fn run(&mut self){
+    pub fn run(&mut self){
         while self.pc  < self.code.len() {
             let op:u8 = self.get_current_instruction();
             
@@ -56,22 +60,12 @@ impl Evm {
                     // 处理其他未覆盖到的操作
                 }
             }
-            
-            // if PUSH1 <= op && op <= PUSH32  {
-            //     let size:usize = (op-PUSH1+1) as usize;
-            //     self.push(size)
-            // }else if PUSH0 == op {
-            //     self.stack.push(0);
-            //     // self.pc += size;
-            // }else if POP == op {
-            //     self.pop();
-            // }
         }
     }
     
     ///堆栈行为
     /// 出栈
-    fn pop(&mut self){
+    pub fn pop(&mut self){
         if self.stack.len()!=0 {
             self.stack.pop();
         }else {

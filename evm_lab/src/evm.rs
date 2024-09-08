@@ -1,7 +1,14 @@
+extern crate num_bigint;
+extern crate num_traits;
+
+use std::panic;
 use log::*;
 use byteorder::{ByteOrder,BigEndian};
 use log4rs::append::rolling_file::policy::compound::trigger::size;
 
+use num_bigint::BigUint;
+use num_bigint::ToBigInt;
+use num_traits::{Zero, One};
 use crate::const_var::*;
 #[derive(Debug)]
 pub struct Evm {
@@ -11,7 +18,7 @@ pub struct Evm {
     pc: usize,
     //堆栈
     //每个元素长度为256位（32字节），最大深度为1024元素，但是每个操作只能操作堆栈顶的16个元素
-    stack: Vec<u32>
+    stack: Vec<(BigUint,u8)>
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -28,18 +35,33 @@ impl Evm {
     /// ```
     pub fn new(code:Vec<u8>) -> Self{
         init_log();
-        Evm { code: code, pc: 0, stack: Vec::<u32>::new() }
+        Evm { code: code, pc: 0, stack: Vec::<BigUint>::new() }
     }   
 
     /// 获取当前待执行的指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// let op:u8 = evm_test.get_current_instruction();
+    /// ```
     pub fn get_current_instruction(&mut self) -> u8 {
         let &op:&u8 = self.code.get(self.pc).unwrap();
-        info!("当前执行的指令为{}",op);
+        info!("当前执行的指令为{}",getInstructionName(op));
+        //程序计数器累加，代表当前指令已取出并准备执行，计数器指向下一个指令。
         self.pc += 1;
-        info!("程序计数器累加1结果为:{}",self.pc);
+        info!("程序计数器:{}(获取当前指令后,程序计数器指向下一个元素索引故pc+1)",self.pc);
         return op.clone();
     }
 
+
+    /// 执行所有指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     pub fn run(&mut self){
         while self.pc  < self.code.len() {
             let op:u8 = self.get_current_instruction();
@@ -50,11 +72,23 @@ impl Evm {
                     self.push(size);
                 }
                 PUSH0 => {
-                    self.stack.push(0);
+                    self.stack.push((BigUint::from(0u32),0u8));
                     // self.pc += size; // 此行应当被删除或者注释掉，因为在 PUSH0 的情况下并未定义 size
                 }
                 POP => {
                     self.pop();
+                }
+                ADD => {
+                    self.add();
+                }
+                MUL => {
+                    self.mul();
+                }
+                SUB => {
+                    self.sub();
+                }
+                DIV => {
+                    self.div();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作
@@ -63,8 +97,14 @@ impl Evm {
         }
     }
     
-    ///堆栈行为
+    /// 堆栈行为
     /// 出栈
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.pop();
+    /// ```
     pub fn pop(&mut self){
         if self.stack.len()!=0 {
             self.stack.pop();
@@ -73,21 +113,111 @@ impl Evm {
         }
     }
 
-    ///入栈
-    fn push(&mut self, size:usize) {
+    /// 入栈
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.push(0 as usize);
+    /// ```
+    pub fn push(&mut self, size:usize) {
         let ops:Vec<u8> = self.code[self.pc..self.pc+size].to_vec();
         ops.iter().for_each(|&x|{
             let value:u32 = u32::from_str_radix(x.to_string().as_str(), 16).unwrap();
-            self.stack.push(value);
+            info!("PUSH的值为:{}",BigUint::from(value));
+            self.stack.push((BigUint::from(value),0u8));
         });
+        // 入栈时程序计数器累加，size为入栈元素的个数
+        info!("程序计数器:{}(将size个元素入栈，pc+size)",self.pc+size);
         self.pc += size
     }
 
-    // ///算数指令
-    // /// add
-    // fn add(){
+    /// 算数指令
+    /// add
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x01];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
+    pub fn add(&mut self){
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        let mut result = BigUint::from(0u8);
+        let result = (a+b) % (BigUint::from(1u32)<<256);  //加法结果需要模2^256，防止溢出
+        info!("ADD:{}",result);
+        self.stack.push(result);
+    }
 
-    // }
+    /// 乘法指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x02];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
+    pub fn mul(&mut self){
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        let result = (a*b) % (BigUint::from(1u32)<<256);
+        info!("MUL:{}",result);
+        self.stack.push(result);
+    }
+
+    /// 减法指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
+    pub fn sub(&mut self){
+        fn vec_to_hex_string(bytes: Vec<u8>) -> String {
+            bytes.iter()
+                 .map(|byte| format!("{:1x}", byte))
+                 .collect()
+        }
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        let mut result = BigUint::from(0u8);
+        if a < b {
+            result =  (BigUint::from(1u32)<<256) - (b - a);
+        } else {
+            result = (a - b)  % (BigUint::from(1u32)<<256);
+        }
+        info!("SUB:{:?}",vec_to_hex_string(result.to_radix_be(16)));
+        self.stack.push(result);
+    }
+
+    /// 除法指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x04];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
+    pub fn div(&mut self){
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        if a == BigUint::from(0u32) {
+            panic!("Division by zero");
+        }
+        let result = (b/a) % (BigUint::from(1u32)<<256);
+        info!("DIV:{}",result);
+        self.stack.push(result);
+    }
 
 }
 
@@ -96,10 +226,33 @@ fn init_log(){
 }
 
 #[test]
-fn test(){
-    let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+fn add_test(){
+    let bytes = vec![0x60, 0x02, 0x60, 0x03,0x01];
     let mut evm_test = Evm::new(bytes);
-    println!("{:?}", evm_test);
     evm_test.run();
-    println!("{:?}",evm_test);    
+    println!("{:?}",evm_test.stack);    
+}
+
+#[test]
+fn mul_test(){
+    let bytes = vec![0x60, 0x02, 0x60, 0x03,0x02];
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}",evm_test.stack);    
+}
+
+#[test]
+fn sub_test(){
+    let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03];
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}",evm_test.stack);    
+}
+
+#[test]
+fn div_test(){
+    let bytes = vec![0x60, 0x06, 0x60, 0x03,0x04];
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}",evm_test.stack);    
 }

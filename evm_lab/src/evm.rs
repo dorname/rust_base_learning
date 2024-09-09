@@ -35,7 +35,7 @@ impl Evm {
     /// ```
     pub fn new(code:Vec<u8>) -> Self{
         init_log();
-        Evm { code: code, pc: 0, stack: Vec::<BigUint>::new() }
+        Evm { code: code, pc: 0, stack: Vec::<(BigUint,u8)>::new() }
     }   
 
     /// 获取当前待执行的指令
@@ -47,7 +47,7 @@ impl Evm {
     /// ```
     pub fn get_current_instruction(&mut self) -> u8 {
         let &op:&u8 = self.code.get(self.pc).unwrap();
-        info!("当前执行的指令为{}",getInstructionName(op));
+        info!("当前执行的指令为{}",get_instruction_name(op));
         //程序计数器累加，代表当前指令已取出并准备执行，计数器指向下一个指令。
         self.pc += 1;
         info!("程序计数器:{}(获取当前指令后,程序计数器指向下一个元素索引故pc+1)",self.pc);
@@ -131,7 +131,6 @@ impl Evm {
         info!("程序计数器:{}(将size个元素入栈，pc+size)",self.pc+size);
         self.pc += size
     }
-
     /// 算数指令
     /// add
     /// ```
@@ -144,12 +143,33 @@ impl Evm {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
         }
-        let a = self.stack.pop().unwrap();
-        let b = self.stack.pop().unwrap();
+        let unit_a = self.stack.pop().unwrap();
+        let sign_a = unit_a.1;
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let sign_b = unit_b.1;
+        let b = get_uint256(unit_b);
         let mut result = BigUint::from(0u8);
-        let result = (a+b) % (BigUint::from(1u32)<<256);  //加法结果需要模2^256，防止溢出
-        info!("ADD:{}",result);
-        self.stack.push(result);
+        match sign_a==sign_b {
+            true => {
+                result = (a+b) % (BigUint::from(1u32)<<256);   //加法结果需要模2^256，防止溢出
+                info!("ADD:{}",vec_to_hex_string(result.to_radix_be(16)));
+                self.stack.push((result,sign_a));
+            },
+            false => {
+                // 1 -2
+                if a < b  {
+                    result = (BigUint::from(1u32)<<256)-((b-a) % (BigUint::from(1u32)<<256));  // 加法结果需要模2^256，防止溢出
+                    info!("ADD:负数{}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result,1u8));
+                }else {
+                // 2 -1
+                    result = (a-b) % (BigUint::from(1u32)<<256);  // 加法结果需要模2^256，防止溢出
+                    info!("ADD:{}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result,0u8));
+                }
+            }  
+        };
     }
 
     /// 乘法指令
@@ -163,11 +183,25 @@ impl Evm {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
         }
-        let a = self.stack.pop().unwrap();
-        let b = self.stack.pop().unwrap();
-        let result = (a*b) % (BigUint::from(1u32)<<256);
-        info!("MUL:{}",result);
-        self.stack.push(result);
+        let unit_a = self.stack.pop().unwrap();
+        let sign_a = unit_a.1;
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let sign_b = unit_b.1;
+        let b = get_uint256(unit_b);
+        let mut result = BigUint::from(0u8);
+        match sign_a==sign_b{
+            true => {
+                result = (a*b) % (BigUint::from(1u32)<<256);
+                info!("MUL:{}",result);
+                self.stack.push((result,sign_a));
+            },
+            _=> {
+                result = (a*b) % (BigUint::from(1u32)<<256);
+                info!("MUL:{}",result);
+                self.stack.push((result,1u8));
+            }
+        }
     }
 
     /// 减法指令
@@ -178,24 +212,45 @@ impl Evm {
     /// evm_test.run();
     /// ```
     pub fn sub(&mut self){
-        fn vec_to_hex_string(bytes: Vec<u8>) -> String {
-            bytes.iter()
-                 .map(|byte| format!("{:1x}", byte))
-                 .collect()
-        }
         if self.stack.len() < 2 {
             panic!("Stack underflow");
         }
-        let a = self.stack.pop().unwrap();
-        let b = self.stack.pop().unwrap();
+        let unit_a = self.stack.pop().unwrap();
+        let sign_a = unit_a.1;
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let sign_b = unit_b.1;
+        let b = get_uint256(unit_b);
         let mut result = BigUint::from(0u8);
-        if a < b {
-            result =  (BigUint::from(1u32)<<256) - (b - a);
-        } else {
-            result = (a - b)  % (BigUint::from(1u32)<<256);
+        match sign_a==sign_b {
+            true => {
+                // -1 - -2
+                // 1 - 2
+                if a < b {
+                    result = (BigUint::from(1u32)<<256) - ((b-a) % (BigUint::from(1u32)<<256));
+                    info!("SUB:负{:?}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result,1u8));
+                }else {
+                    result = (a-b) % (BigUint::from(1u32)<<256);
+                    info!("SUB:{:?}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result,0u8));
+                }
+            },
+            _=>{
+               //-1 - 2
+               // 1 - - 2
+               // 2 - -1
+               result =(BigUint::from(1u32)<<256) -  ((a+b) % (BigUint::from(1u32)<<256));
+               if sign_a == 1 {
+                    info!("SUB:负{:?}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result.clone(),1u8));
+               }
+               if sign_b == 1 {
+                    info!("SUB:{:?}",vec_to_hex_string(result.to_radix_be(16)));
+                    self.stack.push((result.clone(),0u8));
+               }
+            }
         }
-        info!("SUB:{:?}",vec_to_hex_string(result.to_radix_be(16)));
-        self.stack.push(result);
     }
 
     /// 除法指令
@@ -209,14 +264,17 @@ impl Evm {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
         }
-        let a = self.stack.pop().unwrap();
-        let b = self.stack.pop().unwrap();
+        let unit_a = self.stack.pop().unwrap();
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let b = get_uint256(unit_b);
+        let mut result = BigUint::from(0u8);
         if a == BigUint::from(0u32) {
             panic!("Division by zero");
         }
-        let result = (b/a) % (BigUint::from(1u32)<<256);
-        info!("DIV:{}",result);
-        self.stack.push(result);
+        result = (b/a) % (BigUint::from(1u32)<<256);
+        info!("DIV:{}",vec_to_hex_string(result.to_radix_be(16)));
+        self.stack.push((result,0u8));
     }
 
 }
@@ -243,10 +301,10 @@ fn mul_test(){
 
 #[test]
 fn sub_test(){
-    let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03];
+    let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03,0x60, 0x05,0x01];
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
-    println!("{:?}",evm_test.stack);    
+    println!("{:?}",get_uint256(evm_test.stack.get(0).unwrap().clone()));    
 }
 
 #[test]

@@ -8,7 +8,9 @@ pub const POP:u8 = 0x50;
 pub const ADD:u8 = 0x01;
 pub const MUL:u8 = 0x02;
 pub const SUB:u8 = 0x03;
-pub const DIV:u8 = 0x04;   
+pub const DIV:u8 = 0x04;
+pub const SDIV:u8 = 0x05;
+
 
 
 /// 判断是否是有符号的数据
@@ -45,6 +47,7 @@ pub fn get_instruction_name(op:u8) -> String{
         MUL => "MUL".to_string(),
         SUB => "SUB".to_string(),
         DIV => "DIV".to_string(),
+        SDIV => "SDIV".to_string(),
         _ => "UNKNOWN".to_string()
     }
 }

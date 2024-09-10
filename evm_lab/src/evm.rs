@@ -8,6 +8,7 @@ use log4rs::append::rolling_file::policy::compound::trigger::size;
 
 use num_bigint::BigUint;
 use num_bigint::ToBigInt;
+use num_traits::sign;
 use num_traits::{Zero, One};
 use crate::const_var::*;
 #[derive(Debug)]
@@ -90,6 +91,9 @@ impl Evm {
                 DIV => {
                     self.div();
                 }
+                SDIV => {
+                    self.sdiv();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
@@ -123,7 +127,10 @@ impl Evm {
     pub fn push(&mut self, size:usize) {
         let ops:Vec<u8> = self.code[self.pc..self.pc+size].to_vec();
         ops.iter().for_each(|&x|{
-            let value:u32 = u32::from_str_radix(x.to_string().as_str(), 16).unwrap();
+            let mut value:u32 = u32::from_str_radix(x.to_string().as_str(), 16).unwrap();
+            if x > 0x09 {
+                value = x.clone() as u32;
+            }
             info!("PUSH的值为:{}",BigUint::from(value));
             self.stack.push((BigUint::from(value),0u8));
         });
@@ -256,7 +263,7 @@ impl Evm {
     /// 除法指令
     /// ```
     /// use evm_lab::evm::Evm;
-    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x04];
+    /// let bytes = vec![0x60, 0x06, 0x60, 0x03,0x04];
     /// let mut evm_test = Evm::new(bytes);
     /// evm_test.run();
     /// ```
@@ -269,12 +276,50 @@ impl Evm {
         let unit_b = self.stack.pop().unwrap();
         let b = get_uint256(unit_b);
         let mut result = BigUint::from(0u8);
-        if a == BigUint::from(0u32) {
+        if b == BigUint::from(0u32) {
             panic!("Division by zero");
         }
-        result = (b/a) % (BigUint::from(1u32)<<256);
+        result = (a/b) % (BigUint::from(1u32)<<256);
         info!("DIV:{}",vec_to_hex_string(result.to_radix_be(16)));
         self.stack.push((result,0u8));
+    }
+
+
+    ///带符号除法运算
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x05];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
+    pub fn sdiv(&mut self){
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let unit_a = self.stack.pop().unwrap();
+        let sign_a = unit_a.1;
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let sign_b = unit_b.1;
+        let b = get_uint256(unit_b);
+        let mut result = BigUint::from(0u8);
+
+        if b == BigUint::from(0u32) {
+            panic!("Division by zero");
+        }
+        match sign_a==sign_b {
+            true => {
+                result = (a/b) % (BigUint::from(1u32)<<256);
+                info!("SDIV:{}",vec_to_hex_string(result.to_radix_be(16)));
+                self.stack.push((result,0u8));
+            },
+            _=> {
+                result =(BigUint::from(1u32)<<256) - ((a/b) % (BigUint::from(1u32)<<256));
+                info!("SDIV:负{:?}",vec_to_hex_string(result.to_radix_be(16)));
+                self.stack.push((result,1u8));
+            }
+        }
+   
     }
 
 }
@@ -301,7 +346,7 @@ fn mul_test(){
 
 #[test]
 fn sub_test(){
-    let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03,0x60, 0x05,0x01];
+    let bytes = vec![0x60, 0x04, 0x60, 0x03,0x03,0x60,0x05,0x01];
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}",get_uint256(evm_test.stack.get(0).unwrap().clone()));    
@@ -309,7 +354,15 @@ fn sub_test(){
 
 #[test]
 fn div_test(){
-    let bytes = vec![0x60, 0x06, 0x60, 0x03,0x04];
+    let bytes = vec![0x60, 0x06, 0x60, 0x12,0x04];   
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}",evm_test.stack);    
+}
+
+#[test]
+fn sdiv_test(){
+    let bytes = vec![0x60, 0x04, 0x60, 0x02,0x03,0x60,0x0b,0x05];   
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}",evm_test.stack);    

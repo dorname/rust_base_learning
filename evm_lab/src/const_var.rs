@@ -1,5 +1,5 @@
 use num_bigint::BigUint;
-
+// 栈堆指令
 pub const PUSH0:u8 = 0x5F;
 pub const PUSH1:u8 = 0x60;
 pub const PUSH32:u8 = 0x7F;
@@ -10,6 +10,13 @@ pub const MUL:u8 = 0x02;
 pub const SUB:u8 = 0x03;
 pub const DIV:u8 = 0x04;
 pub const SDIV:u8 = 0x05;
+pub const MOD:u8 = 0x06;
+pub const SMOD:u8 = 0x07;
+pub const ADDMOD:u8 = 0x08;
+pub const MULMOD:u8 = 0x09;
+pub const EXP:u8 = 0x0A;
+pub const SIGNEXTEND:u8 = 0x0B;
+
 
 
 
@@ -48,6 +55,11 @@ pub fn get_instruction_name(op:u8) -> String{
         SUB => "SUB".to_string(),
         DIV => "DIV".to_string(),
         SDIV => "SDIV".to_string(),
+        MOD => "MOD".to_string(),
+        SMOD => "SMOD".to_string(),
+        ADDMOD => "ADDMOD".to_string(),
+        MULMOD => "MULMOD".to_string(),
+        EXP => "EXP".to_string(),
         _ => "UNKNOWN".to_string()
     }
 }

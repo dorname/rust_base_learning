@@ -1,17 +1,14 @@
 extern crate num_bigint;
 extern crate num_traits;
 
-use byteorder::{BigEndian, ByteOrder};
+use crate::log_utils::*;
 use log::*;
-use log4rs::append::rolling_file::policy::compound::trigger::size;
 use num_traits::zero;
-use std::panic;
+use std::{panic, result};
 
 use crate::const_var::*;
 use num_bigint::BigUint;
-use num_bigint::ToBigInt;
-use num_traits::sign;
-use num_traits::{One, Zero};
+use num_traits::Zero;
 #[derive(Debug)]
 pub struct Evm {
     //以太坊虚拟机字节码
@@ -175,28 +172,51 @@ impl Evm {
         let unit_b = self.stack.pop().unwrap();
         let sign_b = unit_b.1;
         let b = get_uint256(unit_b);
-        let mut result = BigUint::from(0u8);
-        match sign_a == sign_b {
-            true => {
-                result = (a + b) % (BigUint::from(1u32) << 256); //加法结果需要模2^256，防止溢出
-                info!("ADD:{}", vec_to_hex_string(result.to_radix_be(16)));
-                self.stack.push((result, sign_a));
+        let sign_a_b = ((sign_a | sign_b) != 0) as u8;
+        let result: BigUint = match sign_a_b {
+            0u8 => {
+                let add_result: BigUint = (a.clone() + b.clone()) % (BigUint::from(1u32) << 256); //加法结果需要模2^256，防止溢出
+                log_add(
+                    sign_a.clone(),
+                    sign_b.clone(),
+                    a,
+                    b,
+                    add_result.clone(),
+                    false,
+                );
+                add_result // info!("ADD:{}", vec_to_hex_string(result.to_radix_be(16)));
             }
-            false => {
+            _ => {
                 // 1 -2
                 if a < b {
-                    result =
-                        (BigUint::from(1u32) << 256) - ((b - a) % (BigUint::from(1u32) << 256)); // 加法结果需要模2^256，防止溢出
-                    info!("ADD:负数{}", vec_to_hex_string(result.to_radix_be(16)));
-                    self.stack.push((result, 1u8));
+                    let add_result: BigUint = (BigUint::from(1u32) << 256)
+                        - ((b.clone() - a.clone()) % (BigUint::from(1u32) << 256)); // 加法结果需要模2^256，防止溢出
+                    log_add(
+                        sign_a.clone(),
+                        sign_b.clone(),
+                        a,
+                        b,
+                        add_result.clone(),
+                        true,
+                    );
+                    add_result
                 } else {
                     // 2 -1
-                    result = (a - b) % (BigUint::from(1u32) << 256); // 加法结果需要模2^256，防止溢出
-                    info!("ADD:{}", vec_to_hex_string(result.to_radix_be(16)));
-                    self.stack.push((result, 0u8));
+                    let add_result: BigUint =
+                        (a.clone() - b.clone()) % (BigUint::from(1u32) << 256); // 加法结果需要模2^256，防止溢出
+                    log_add(
+                        sign_a.clone(),
+                        sign_b.clone(),
+                        a,
+                        b,
+                        add_result.clone(),
+                        true,
+                    );
+                    add_result
                 }
             }
         };
+        self.stack.push((result, sign_a_b));
     }
 
     /// 乘法指令
@@ -224,7 +244,7 @@ impl Evm {
                 self.stack.push((result, sign_a));
             }
             _ => {
-                result = (a * b) % (BigUint::from(1u32) << 256);
+                result = (BigUint::from(1u32) << 256) - (a * b) % (BigUint::from(1u32) << 256);
                 info!("MUL:{}", result);
                 self.stack.push((result, 1u8));
             }
@@ -361,9 +381,8 @@ impl Evm {
         if b == zero() {
             panic!("Mod by zero");
         }
-        result = (a % b);
+        result = a % b;
         self.stack.push((result, 0u8));
-
     }
 
     /// 带符号取模运算
@@ -385,12 +404,12 @@ impl Evm {
         let b = get_uint256(unit_b);
         let mut result = BigUint::from(0u8);
 
-        if b == zero()  {
+        if b == zero() {
             panic!("Smod by zero");
         }
         match sign_a == sign_b {
             true => {
-                result = (a % b);
+                result = a % b;
                 info!("SMOD:{}", vec_to_hex_string(result.to_radix_be(16)));
                 self.stack.push((result, 0u8));
             }
@@ -423,33 +442,88 @@ impl Evm {
         let sign_c = unit_c.1;
         let c = get_uint256(unit_c);
         let mut result = BigUint::from(0u8);
-
-        match sign_a == sign_b && sign_a == sign_c {
+        if c.is_zero() {
+            panic!("Mod by Zero");
+        }
+        // if a+b > 0
+        let sign_a_b = match a.clone() + b.clone() {
+            v if v >= zero() => 0u8,
+            _ => 1u8,
+        };
+        match sign_a_b == sign_c {
             true => {
                 result = (a + b) % c;
                 info!("ADD_MOD:{}", vec_to_hex_string(result.to_radix_be(16)));
                 self.stack.push((result, 0u8));
             }
-            _ => {      
-                info!("ADD_MODk计算过程:({:?}+{:?})%{:?}",a.clone(),b.clone(),c.clone() );
+            _ => {
+                // TODO 不确定为什么EVM模拟器模拟的结果都是 a+b
+                info!(
+                    "ADD_MODk计算过程:({:?}+{:?})%-{:?}",
+                    a.clone(),
+                    b.clone(),
+                    c.clone()
+                );
                 result = (BigUint::from(1u32) << 256) - ((a + b) % c);
-                info!("ADD_MOD的存储值:{:?}", vec_to_hex_string(result.to_radix_be(16)));
-                info!("ADD_MOD真实值:-{:?}", get_uint256((result.clone(),1u8)));
+                info!(
+                    "ADD_MOD的存储值:{:?}",
+                    vec_to_hex_string(result.to_radix_be(16))
+                );
+                info!("ADD_MOD的真实值:-{:?}", get_uint256((result.clone(), 1u8)));
                 self.stack.push((result, 1u8));
             }
         }
     }
 
+    /// 乘法取模指令
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x02, 0x60, 0x03,0x60,0x03,0x09];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     pub fn mul_mod(&mut self) {
-
+        if self.stack.len() < 3 {
+            panic!("Stack underflow");
+        }
+        let unit_a = self.stack.pop().unwrap();
+        let sign_a = unit_a.1;
+        let a = get_uint256(unit_a);
+        let unit_b = self.stack.pop().unwrap();
+        let sign_b = unit_b.1;
+        let b = get_uint256(unit_b);
+        let unit_c = self.stack.pop().unwrap();
+        let sign_c = unit_c.1;
+        let c = get_uint256(unit_c);
+        if c.is_zero() {
+            panic!("Mod by Zero");
+        }
+        let sign_a_b_c = ((sign_a | sign_b | sign_c) != 0) as u8;
+        let mut mul_mod_result = (a.clone() * b.clone()) % c.clone();
+        if sign_a_b_c == 0 {
+            log_mul_mod(
+                a.clone(),
+                b.clone(),
+                c.clone(),
+                mul_mod_result.clone(),
+                false,
+            );
+        } else {
+            mul_mod_result = (BigUint::from(1u32) << 256) - mul_mod_result;
+            log_mul_mod(
+                a.clone(),
+                b.clone(),
+                c.clone(),
+                mul_mod_result.clone(),
+                true,
+            );
+        }
+        self.stack.push((mul_mod_result, sign_a_b_c));
     }
 
-    pub fn sign_extend(&mut self) {
+    pub fn sign_extend(&mut self) {}
 
-    }
-
-    pub fn exp(&mut self) {
-    }
+    pub fn exp(&mut self) {}
 }
 
 fn init_log() {
@@ -500,7 +574,7 @@ fn sdiv_test() {
 
 #[test]
 fn mod_test() {
-    let bytes = vec![0x60, 0x04, 0x60, 0x08,0x06];
+    let bytes = vec![0x60, 0x04, 0x60, 0x08, 0x06];
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", evm_test.stack);
@@ -508,7 +582,7 @@ fn mod_test() {
 
 #[test]
 fn smod_test() {
-    let bytes = vec![0x60, 0x08, 0x60, 0x04,0x03,0x60,0x09,0x07];
+    let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x03, 0x60, 0x09, 0x07];
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", evm_test.stack);
@@ -516,8 +590,18 @@ fn smod_test() {
 
 #[test]
 fn add_mod_test() {
-    // let bytes = vec![0x60, 0x08, 0x60, 0x04,0x03,0x60,0x01,0x60,0x09,0x08];
-    let bytes = vec![0x60, 0x03, 0x60, 0x06,0x03,0x60,0x01,0x60,0x09,0x08];
+    let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x03, 0x60, 0x01, 0x60, 0x09, 0x08];
+    // let bytes = vec![0x60, 0x03, 0x60, 0x06, 0x03, 0x60, 0x01, 0x60, 0x09, 0x08];
+
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+}
+
+#[test]
+fn mul_mod_test() {
+    let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x03, 0x60, 0x01, 0x60, 0x09, 0x09];
+    // let bytes = vec![0x60, 0x03, 0x60, 0x06, 0x03, 0x60, 0x01, 0x60, 0x09, 0x09];
 
     let mut evm_test = Evm::new(bytes);
     evm_test.run();

@@ -1,5 +1,6 @@
-pub mod evm;
 pub mod const_var;
+pub mod evm;
+pub mod log_utils;
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }

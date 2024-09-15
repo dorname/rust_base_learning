@@ -51,6 +51,7 @@ pub fn get_instruction_name(op: u8) -> String {
         ADDMOD => "ADDMOD".to_string(),
         MULMOD => "MULMOD".to_string(),
         EXP => "EXP".to_string(),
+        SIGNEXTEND => "SIGNEXTEND".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }

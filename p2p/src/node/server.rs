@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use log::info;
 
-use crate::initLog;
+use crate::init_log;
 
 #[derive(Clone, Copy)]
 pub struct Server;
@@ -75,7 +75,7 @@ impl Server {
 
 #[test]
 fn test_server() {
-    initLog();
+    init_log();
     info!("初始化p2p服务端节点");
     Server::init("192.168.21.233:12345".to_owned());
 }

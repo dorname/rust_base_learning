@@ -4,6 +4,7 @@ struct StackItem<T> {
     data:T
 }
 
+
 #[derive(Debug)]
 struct Stack<T> {
     size:usize,
@@ -11,6 +12,12 @@ struct Stack<T> {
 }
 
 impl<T> Stack<T>{
+
+    /// 这是一个结构体
+    /// # Examples:
+    /// ```
+    /// let mut num:Stack<i32>= Stack::new();
+    ///     /// ```
     fn new() -> Self {
         Self {
             size:0,

@@ -1,4 +1,4 @@
-use crate::const_var::*;
+use crate::utils::*;
 use log::*;
 use num_bigint::BigUint;
 pub struct LogTemplate {

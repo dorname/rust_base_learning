@@ -16,4 +16,10 @@ pub const MULMOD: u8 = 0x09;
 pub const EXP: u8 = 0x0A;
 pub const SIGNEXTEND: u8 = 0x0B;
 
-
+// 比较指令
+pub const LT: u8 = 0x10;
+pub const GT: u8 = 0x11;
+pub const SLT: u8 = 0x12;
+pub const SGT: u8 = 0x13;
+pub const EQ: u8 = 0x14;
+pub const ISZERO: u8 = 0x15;

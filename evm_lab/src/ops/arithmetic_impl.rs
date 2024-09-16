@@ -1,13 +1,12 @@
-use crate::ops::traits::*;
 use crate::evm::Evm;
 use crate::log_utils::*;
+use crate::ops::traits::*;
 use crate::utils::*;
-use num_integer::Integer;
 use num_bigint::{BigInt, BigUint, Sign};
+use num_integer::Integer;
 use num_traits::{zero, One, ToPrimitive, Zero};
 /// 算术指令集特征
 impl Arithmetic for Evm {
-
     /// add
     /// ```
     /// use evm_lab::evm::Evm;
@@ -557,7 +556,8 @@ fn div_test() {
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", evm_test.stack);
-}     /// 算数指令
+}
+/// 算数指令
 
 #[test]
 fn sdiv_test() {

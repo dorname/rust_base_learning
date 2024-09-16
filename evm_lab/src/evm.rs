@@ -1,6 +1,6 @@
 use crate::const_var::*;
-use crate::utils::*;
 use crate::ops::traits::*;
+use crate::utils::*;
 use log::*;
 use num_bigint::BigUint;
 
@@ -111,6 +111,24 @@ impl Evm {
                 SIGNEXTEND => {
                     self.sign_extend();
                 }
+                LT => {
+                    self.lt();
+                }
+                GT => {
+                    self.gt();
+                }
+                SLT => {
+                    self.slt();
+                }
+                SGT => {
+                    self.sgt();
+                }
+                EQ => {
+                    self.eq();
+                }
+                ISZERO => {
+                    self.is_zero();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
@@ -155,11 +173,8 @@ impl Evm {
         info!("程序计数器:{}(将size个元素入栈，pc+size)", self.pc + size);
         self.pc += size
     }
-   
 }
 
 fn init_log() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
 }
-
-

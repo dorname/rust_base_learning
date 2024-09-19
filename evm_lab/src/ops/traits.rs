@@ -20,3 +20,15 @@ pub trait Comparison {
     fn slt(&mut self);
     fn sgt(&mut self);
 }
+
+//位运算指令集
+pub trait Bitwise {
+    fn and(&mut self);
+    fn or(&mut self);
+    fn xor(&mut self);
+    fn not(&mut self);
+    fn byte(&mut self);
+    fn shl(&mut self);
+    fn shr(&mut self);
+    fn sar(&mut self);
+}

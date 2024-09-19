@@ -129,6 +129,30 @@ impl Evm {
                 ISZERO => {
                     self.is_zero();
                 }
+                AND => {
+                    self.and();
+                }
+                OR => {
+                    self.or();
+                }
+                XOR => {
+                    self.xor();
+                }
+                NOT => {
+                    self.not();
+                }
+                BYTE => {
+                    self.byte();
+                }
+                SHL => {
+                    self.shl();
+                }
+                SHR => {
+                    self.shr();
+                }
+                SAR => {
+                    self.sar();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }

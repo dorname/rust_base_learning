@@ -23,3 +23,14 @@ pub const SLT: u8 = 0x12;
 pub const SGT: u8 = 0x13;
 pub const EQ: u8 = 0x14;
 pub const ISZERO: u8 = 0x15;
+
+// 位运算指令
+pub const AND: u8 = 0x16;
+pub const OR: u8 = 0x17;
+pub const XOR: u8 = 0x18;
+pub const NOT: u8 = 0x19;
+pub const BYTE: u8 = 0x1A;
+pub const SHL: u8 = 0x1B;
+pub const SHR: u8 = 0x1C;
+pub const SAR: u8 = 0x1D;
+

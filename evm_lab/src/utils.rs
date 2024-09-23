@@ -22,7 +22,10 @@ pub fn vec_to_hex_string(bytes: Vec<u8>) -> String {
 pub fn get_instruction_name(op: u8) -> String {
     match op {
         PUSH0 => "PUSH0".to_string(),
-        PUSH1 => "PUSH1".to_string(),
+        operation if operation>=PUSH1 && operation <= PUSH32 => {
+            let num = (operation - PUSH1 + 1) as usize;
+            format!("PUSH{}", num)
+        },
         PUSH32 => "PUSH32".to_string(),
         POP => "POP".to_string(),
         ADD => "ADD".to_string(),

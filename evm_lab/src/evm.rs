@@ -1,8 +1,11 @@
+
 use crate::const_var::*;
 use crate::ops::traits::*;
 use crate::utils::*;
+use hex::decode;
 use log::*;
 use num_bigint::BigUint;
+use num_traits::{ToPrimitive, Zero};
 
 #[derive(Debug)]
 pub struct Evm {
@@ -68,7 +71,7 @@ impl Evm {
 
             match op {
                 op if (PUSH1 <= op && op <= PUSH32) => {
-                    let size = (op - PUSH1 + 1) as usize;
+                    let size = (op - PUSH1+1) as usize;
                     self.push(size);
                 }
                 PUSH0 => {
@@ -184,15 +187,21 @@ impl Evm {
     /// evm_test.push(0 as usize);
     /// ```
     pub fn push(&mut self, size: usize) {
-        let ops: Vec<u8> = self.code[self.pc..self.pc + size].to_vec();
-        ops.iter().for_each(|&x| {
+        let ops: Vec<u8> = self.code[self.pc..self.pc + size].to_vec(); 
+        let result = ops.iter().fold((ops.len()-1,BigUint::zero()),|(pos,mut sum),&x| {
             let mut value: u32 = u32::from_str_radix(x.to_string().as_str(), 16).unwrap();
             if x > 0x09 {
                 value = x.clone() as u32;
             }
-            info!("PUSH的值为:{}", BigUint::from(value));
-            self.stack.push((BigUint::from(value), 0u8));
-        });
+            sum += BigUint::from(value) << (8*pos);
+            if pos == 0 {
+                return (pos,sum);
+            }
+            (pos-1,sum)
+            // 
+        }).1;
+        info!("PUSH的值为:{}", vec_to_hex_string(result.to_radix_be(16)));
+        self.stack.push((result, 0u8));
         // 入栈时程序计数器累加，size为入栈元素的个数
         info!("程序计数器:{}(将size个元素入栈，pc+size)", self.pc + size);
         self.pc += size
@@ -201,4 +210,25 @@ impl Evm {
 
 fn init_log() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
+}
+
+#[test]
+fn test_push(){
+    let excute_codes = "62ff0011";
+    let bytes = hex::decode(excute_codes).unwrap();
+    // let bytes = vec![0x61, 0xff,0x00];
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+}
+
+
+#[test]
+fn test_idx(){
+    let mut value: u32 = u32::from_str_radix(0xff.to_string().as_str(), 16).unwrap();
+    if 0xff > 0x09 {
+        value = 0xff.clone() as u32;
+    }
+    let result:BigUint = (BigUint::from(value) << 8);
+    println!("PUSH的值为:{}", vec_to_hex_string(result.to_radix_be(16)) );
 }

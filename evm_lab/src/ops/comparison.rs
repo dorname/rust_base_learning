@@ -5,6 +5,14 @@ use crate::utils::*;
 use num_bigint::BigUint;
 use num_traits::{zero, one};
 impl Comparison for Evm {
+
+    /// 小于 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x10];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn lt(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -28,6 +36,13 @@ impl Comparison for Evm {
         self.stack.push((res, 0u8));
     }
 
+    /// 大于 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x11];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn gt(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -51,6 +66,13 @@ impl Comparison for Evm {
         self.stack.push((res, 0u8));
     }
 
+    /// 等于 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x12];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn eq(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -74,6 +96,13 @@ impl Comparison for Evm {
         self.stack.push((res, 0u8));
     }
 
+    /// 零值判断 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x13];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn is_zero(&mut self) {
         if self.stack.len() < 1 {
             panic!("Stack underflow");
@@ -99,6 +128,13 @@ impl Comparison for Evm {
         logger.log_real_val();
     }
 
+    /// 带符号的大于比较 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x14];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn sgt(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -138,6 +174,13 @@ impl Comparison for Evm {
         self.stack.push((res, 0u8));
     }
 
+    /// 带符号的小于比较 
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x15];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn slt(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");

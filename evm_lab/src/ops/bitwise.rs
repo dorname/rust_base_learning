@@ -1,5 +1,3 @@
-use std::result;
-
 use crate::evm::Evm;
 use crate::log_utils::*;
 use crate::ops::traits::*;
@@ -165,6 +163,13 @@ impl Bitwise for Evm {
         
     }
     
+    /// 左移位运算
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x1b];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn shl(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -192,6 +197,13 @@ impl Bitwise for Evm {
         logger.log_real_val();
         self.stack.push((result,0u8));
     }
+    /// 右移位运算
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x08, 0x60, 0x04, 0x1c];
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn shr(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -210,7 +222,6 @@ impl Bitwise for Evm {
         let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
             zero()
         } else {
-            // let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
             left >> right.to_usize().unwrap()
         };
         logger.set_result(result.clone());
@@ -219,7 +230,46 @@ impl Bitwise for Evm {
         logger.log_real_val();
         self.stack.push((result,0u8));
     }
+
+    ///符号右移位运算
+    /// ```
+    /// let excute_codes = "60ff60ee0360011d";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// ```
     fn sar(&mut self) {
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let unit_r = self.stack.pop().unwrap();
+        let unit_l = self.stack.pop().unwrap();
+        let sign_l = unit_l.1;
+        let mut logger = LogTemplate::new_two_cal(
+            "SAR".to_owned(),
+            ">>".to_owned(),
+            unit_l.clone(),
+            unit_r.clone(),
+        );
+        logger.log_two_cal();
+        let left = get_uint256(unit_l);
+        let right= get_uint256(unit_r);
+        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
+            zero()
+        } else {
+            let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
+            if sign_l==1u8 {
+                (left >> right.to_usize().unwrap()) ^ mask
+            }else {
+                left >> right.to_usize().unwrap()
+            }
+            
+        };
+        logger.set_result(result.clone());
+        logger.set_is_negative(sign_l);
+        logger.log_store_val();
+        logger.log_real_val();
+        self.stack.push((result,sign_l));
 
     }
 
@@ -254,6 +304,15 @@ fn test_shl() {
 #[test]
 fn test_shr() {
     let excute_codes = "60ff60041c";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+}
+
+#[test]
+fn test_sar() {
+    let excute_codes = "60ff60ee0360011d";
     let bytes = hex::decode(excute_codes).unwrap();
     let mut evm_test = Evm::new(bytes);
     evm_test.run();

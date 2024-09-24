@@ -169,21 +169,22 @@ impl Bitwise for Evm {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
         }
-        let unit_a = self.stack.pop().unwrap();
-        let unit_b = self.stack.pop().unwrap();
+        let unit_r = self.stack.pop().unwrap();
+        let unit_l = self.stack.pop().unwrap();
         let mut logger = LogTemplate::new_two_cal(
             "SHL".to_owned(),
             "<<".to_owned(),
-            unit_a.clone(),
-            unit_b.clone(),
+            unit_l.clone(),
+            unit_r.clone(),
         );
         logger.log_two_cal();
-        let a = get_uint256(unit_a);
-        let b = get_uint256(unit_b);
-        let result = if a >= (BigUint::from(1u8)<<256) {
+        let left = get_uint256(unit_l);
+        let right= get_uint256(unit_r);
+        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
             zero()
         } else {
-            a << b.to_usize().unwrap()
+            let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
+            (left << (right.to_usize().unwrap()))& mask
         };
         logger.set_result(result.clone());
         logger.set_is_negative(0u8);
@@ -192,7 +193,31 @@ impl Bitwise for Evm {
         self.stack.push((result,0u8));
     }
     fn shr(&mut self) {
-
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let unit_r = self.stack.pop().unwrap();
+        let unit_l = self.stack.pop().unwrap();
+        let mut logger = LogTemplate::new_two_cal(
+            "SHR".to_owned(),
+            ">>".to_owned(),
+            unit_l.clone(),
+            unit_r.clone(),
+        );
+        logger.log_two_cal();
+        let left = get_uint256(unit_l);
+        let right= get_uint256(unit_r);
+        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
+            zero()
+        } else {
+            // let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
+            left >> right.to_usize().unwrap()
+        };
+        logger.set_result(result.clone());
+        logger.set_is_negative(0u8);
+        logger.log_store_val();
+        logger.log_real_val();
+        self.stack.push((result,0u8));
     }
     fn sar(&mut self) {
 
@@ -218,7 +243,17 @@ fn test_byte() {
 
 #[test]
 fn test_shl() {
-    let excute_codes = "60047fff000000000000000000000000000000000000000000000000000000000000001b";
+    let excute_codes = "7fff0000000000000000000000000000000000000000000000000000000000000060041b";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+}
+
+
+#[test]
+fn test_shr() {
+    let excute_codes = "60ff60041c";
     let bytes = hex::decode(excute_codes).unwrap();
     let mut evm_test = Evm::new(bytes);
     evm_test.run();

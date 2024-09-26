@@ -16,6 +16,8 @@ pub struct Evm {
     //堆栈
     //每个元素长度为256位（32字节），最大深度为1024元素，但是每个操作只能操作堆栈顶的16个元素
     pub stack: Vec<(BigUint, u8)>,
+    //内存
+    pub memory: Vec<u8>,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -36,6 +38,7 @@ impl Evm {
             code: code,
             pc: 0,
             stack: Vec::<(BigUint, u8)>::new(),
+            memory: Vec::<u8>::new(),
         }
     }
 
@@ -229,6 +232,6 @@ fn test_idx(){
     if 0xff > 0x09 {
         value = 0xff.clone() as u32;
     }
-    let result:BigUint = (BigUint::from(value) << 8);
+    let result:BigUint = BigUint::from(value) << 8;
     println!("PUSH的值为:{}", vec_to_hex_string(result.to_radix_be(16)) );
 }

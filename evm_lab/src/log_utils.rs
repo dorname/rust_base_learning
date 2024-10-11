@@ -1,4 +1,4 @@
-use crate::utils::*;
+use crate::{ops::memory, utils::*};
 use log::*;
 use num_bigint::BigUint;
 pub struct LogTemplate {
@@ -48,6 +48,10 @@ impl LogTemplate {
             self.op_name,
             vec_to_hex_string(self.result.to_radix_be(16))
         );
+    }
+
+    pub fn log_memory_store_val(&self, memory: Vec<u8>, size: usize) {
+        info!("{}的存储值:{:?}", self.op_name, println_hex(memory, size));
     }
 
     pub fn log_real_val(&self) {

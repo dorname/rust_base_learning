@@ -34,3 +34,8 @@ pub const SHL: u8 = 0x1B;
 pub const SHR: u8 = 0x1C;
 pub const SAR: u8 = 0x1D;
 
+//内存指令
+pub const MLOAD: u8 = 0x51;
+pub const MSTORE: u8 = 0x52;
+pub const MSTORE8: u8 = 0x53;
+pub const MSIZE: u8 = 0x59;

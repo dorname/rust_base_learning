@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use crate::const_var::*;
 use num_bigint::BigUint;
 
@@ -17,15 +19,32 @@ pub fn get_uint256(unit_x: (BigUint, u8)) -> BigUint {
 }
 
 pub fn vec_to_hex_string(bytes: Vec<u8>) -> String {
-    bytes.iter().map(|byte| format!("{:1x}", byte)).collect()
+    bytes
+        .iter()
+        .map(|byte: &u8| match format!("{:1x}", byte) {
+            v if v.len() < 2 => {
+                format!("0{}", v)
+            }
+            v if v.len() >= 2 => {
+                // println!("{}", v);
+                v
+            }
+            _ => "err".to_string(),
+        })
+        .collect::<String>()
 }
+
+pub fn println_hex(bytes: Vec<u8>, size: usize) -> String {
+    format!("{:0>size$}", vec_to_hex_string(bytes), size = size)
+}
+
 pub fn get_instruction_name(op: u8) -> String {
     match op {
         PUSH0 => "PUSH0".to_string(),
-        operation if operation>=PUSH1 && operation <= PUSH32 => {
+        operation if operation >= PUSH1 && operation <= PUSH32 => {
             let num = (operation - PUSH1 + 1) as usize;
             format!("PUSH{}", num)
-        },
+        }
         PUSH32 => "PUSH32".to_string(),
         POP => "POP".to_string(),
         ADD => "ADD".to_string(),
@@ -44,7 +63,7 @@ pub fn get_instruction_name(op: u8) -> String {
         SLT => "SLT".to_string(),
         SGT => "SGT".to_string(),
         EQ => "EQ".to_string(),
-        ISZERO=> "ISZERO".to_string(),
+        ISZERO => "ISZERO".to_string(),
         AND => "AND".to_string(),
         OR => "OR".to_string(),
         XOR => "XOR".to_string(),
@@ -53,6 +72,10 @@ pub fn get_instruction_name(op: u8) -> String {
         SHL => "SHL".to_string(),
         SHR => "SHR".to_string(),
         SAR => "SAR".to_string(),
+        MSTORE => "MSTORE".to_string(),
+        MSTORE8 => "MSTORE8".to_string(),
+        MSIZE => "MSIZE".to_string(),
+        MLOAD => "MLOAD".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }

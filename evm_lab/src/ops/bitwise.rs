@@ -3,10 +3,9 @@ use crate::log_utils::*;
 use crate::ops::traits::*;
 use crate::utils::*;
 use num_bigint::BigUint;
-use num_traits::{one, zero,ToPrimitive, One};
+use num_traits::{zero, One, ToPrimitive};
 
 impl Bitwise for Evm {
-    
     /// 与运算
     /// ```
     /// use evm_lab::evm::Evm;
@@ -34,7 +33,7 @@ impl Bitwise for Evm {
         logger.set_is_negative(0u8);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,0u8));
+        self.stack.push((result, 0u8));
     }
     /// 或运算
     /// ```
@@ -63,9 +62,9 @@ impl Bitwise for Evm {
         logger.set_is_negative(0u8);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,0u8));
+        self.stack.push((result, 0u8));
     }
-    
+
     /// 异或运算
     /// ```
     /// use evm_lab::evm::Evm;
@@ -93,7 +92,7 @@ impl Bitwise for Evm {
         logger.set_is_negative(0u8);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,0u8));
+        self.stack.push((result, 0u8));
     }
 
     /// 非运算
@@ -116,13 +115,13 @@ impl Bitwise for Evm {
         );
         logger.log_two_cal();
         let a = unit_a.0;
-        let sign_a = if unit_a.1==1u8 {0u8}else{1u8};
-        let result:BigUint = (BigUint::one() << 256) - a;
+        let sign_a = if unit_a.1 == 1u8 { 0u8 } else { 1u8 };
+        let result: BigUint = (BigUint::one() << 256) - a;
         logger.set_result(result.clone());
         logger.set_is_negative(sign_a);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,sign_a));
+        self.stack.push((result, sign_a));
     }
     /// 字节运算
     /// ```
@@ -150,19 +149,18 @@ impl Bitwise for Evm {
             logger.set_is_negative(0u8);
             logger.log_store_val();
             logger.log_real_val();
-            self.stack.push((zero(),0u8));
-        }else {
+            self.stack.push((zero(), 0u8));
+        } else {
             let b = unit_b.0;
-            let result:BigUint = (b >> (8 * position.to_usize().unwrap())) & BigUint::from(0xffu8);
+            let result: BigUint = (b >> (8 * position.to_usize().unwrap())) & BigUint::from(0xffu8);
             logger.set_result(result.clone());
             logger.set_is_negative(0u8);
             logger.log_store_val();
             logger.log_real_val();
-            self.stack.push((result,0u8));
+            self.stack.push((result, 0u8));
         }
-        
     }
-    
+
     /// 左移位运算
     /// ```
     /// use evm_lab::evm::Evm;
@@ -184,18 +182,18 @@ impl Bitwise for Evm {
         );
         logger.log_two_cal();
         let left = get_uint256(unit_l);
-        let right= get_uint256(unit_r);
-        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
+        let right = get_uint256(unit_r);
+        let result: BigUint = if right >= (BigUint::from(1u8) << 256) {
             zero()
         } else {
-            let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
-            (left << (right.to_usize().unwrap()))& mask
+            let mask = (BigUint::from(1u8) << 256) - BigUint::from(1u8);
+            (left << (right.to_usize().unwrap())) & mask
         };
         logger.set_result(result.clone());
         logger.set_is_negative(0u8);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,0u8));
+        self.stack.push((result, 0u8));
     }
     /// 右移位运算
     /// ```
@@ -218,8 +216,8 @@ impl Bitwise for Evm {
         );
         logger.log_two_cal();
         let left = get_uint256(unit_l);
-        let right= get_uint256(unit_r);
-        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
+        let right = get_uint256(unit_r);
+        let result: BigUint = if right >= (BigUint::from(1u8) << 256) {
             zero()
         } else {
             left >> right.to_usize().unwrap()
@@ -228,7 +226,7 @@ impl Bitwise for Evm {
         logger.set_is_negative(0u8);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,0u8));
+        self.stack.push((result, 0u8));
     }
 
     ///符号右移位运算
@@ -253,26 +251,23 @@ impl Bitwise for Evm {
         );
         logger.log_two_cal();
         let left = get_uint256(unit_l);
-        let right= get_uint256(unit_r);
-        let result:BigUint = if right >= (BigUint::from(1u8)<<256) {
+        let right = get_uint256(unit_r);
+        let result: BigUint = if right >= (BigUint::from(1u8) << 256) {
             zero()
         } else {
-            let mask = (BigUint::from(1u8)<<256) - BigUint::from(1u8);
-            if sign_l==1u8 {
+            let mask = (BigUint::from(1u8) << 256) - BigUint::from(1u8);
+            if sign_l == 1u8 {
                 (left >> right.to_usize().unwrap()) ^ mask
-            }else {
+            } else {
                 left >> right.to_usize().unwrap()
             }
-            
         };
         logger.set_result(result.clone());
         logger.set_is_negative(sign_l);
         logger.log_store_val();
         logger.log_real_val();
-        self.stack.push((result,sign_l));
-
+        self.stack.push((result, sign_l));
     }
-
 }
 
 #[test]
@@ -285,7 +280,7 @@ fn test_and() {
 
 #[test]
 fn test_byte() {
-    let bytes = vec![0x61, 0xff,0x00, 0x60,30, 0x1a];
+    let bytes = vec![0x61, 0xff, 0x00, 0x60, 30, 0x1a];
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", evm_test.stack);
@@ -299,7 +294,6 @@ fn test_shl() {
     evm_test.run();
     println!("{:?}", evm_test.stack);
 }
-
 
 #[test]
 fn test_shr() {

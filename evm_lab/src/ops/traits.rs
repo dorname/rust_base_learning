@@ -32,3 +32,10 @@ pub trait Bitwise {
     fn shr(&mut self);
     fn sar(&mut self);
 }
+
+pub trait Memory {
+    fn mstore(&mut self);
+    fn mload(&mut self);
+    fn msize(&mut self);
+    fn mstore8(&mut self);
+}

@@ -90,7 +90,9 @@ impl Memory for Evm {
                 0,
             ); // 将不足的部分填充为
         }
-        self.memory[offset.clone().to_usize().unwrap()] = value.to_u8().unwrap();
+        let mask = (BigUint::from(1u8) << 3) - BigUint::from(1u8);
+        let low_val:BigUint = value & mask;
+        self.memory[offset.clone().to_usize().unwrap()] = low_val.to_u8().unwrap();
         //因为一个十六进制数代表4位所以打印的时候把长度设置成64位长度
         logger.log_memory_store_val(
             self.memory.clone(),
@@ -112,8 +114,8 @@ fn mstore_test() {
 
 #[test]
 fn mstore8_test() {
-    // let excute_codes = "60ff600152";
-    let excute_codes = "6002602053";
+    let excute_codes = "61ff02600153";
+    // let excute_codes = "6002602053";
     let bytes = hex::decode(excute_codes).unwrap();
     let mut evm_test = Evm::new(bytes);
     evm_test.run();

@@ -51,7 +51,7 @@ impl LogTemplate {
         info!(
             "{}的存储值:{:?}",
             self.op_name,
-            vec_to_hex_string(self.result.to_radix_be(16))
+            vec_to_hex_string(self.result.to_bytes_be())
         );
     }
 

@@ -6,8 +6,22 @@ use num_bigint::BigUint;
 use num_traits::{one, zero, ToPrimitive};
 
 impl Memory for Evm {
-    fn mload(&mut self) {}
-    fn msize(&mut self) {}
+    fn mload(&mut self) {
+        if self.stack.len() < 1 {
+            panic!("Stack underflow");
+        }
+        let offset = self.stack.pop().unwrap().0;
+        let info_err = format!("读取便宜位置为{:?}的内存", offset);
+        let mut logger = LogTemplate::new_cal("MLOAD".to_owned(), info_err.to_owned());
+    }
+    fn msize(&mut self) {
+        let mut logger = LogTemplate::new_cal("MSIZE".to_owned(), "获取当前内存大小".to_owned());
+        logger.log_cal();
+        logger.set_result(BigUint::from(self.memory.len()));
+        self.stack.push((BigUint::from(self.memory.len()), 0));
+        logger.log_store_val();
+        logger.log_real_val();
+    }
 
     /// 内存写指令
     /// 目前位数与evm.codes模拟的结果有差异
@@ -56,12 +70,9 @@ impl Memory for Evm {
         for (i, val_byte) in val_bytes.iter().enumerate() {
             self.memory[(offset.clone() + BigUint::from(i)).to_usize().unwrap()] = *val_byte;
         }
-
+        self.fill_memory();
         //因为一个十六进制数代表4位所以打印的时候把长度设置成64位长度
-        logger.log_memory_store_val(
-            self.memory.clone(),
-            (offset.clone() + BigUint::from(32u8)).to_usize().unwrap(),
-        );
+        logger.log_memory_store_val(self.memory.clone());
     }
     fn mstore8(&mut self) {
         if self.stack.len() < 2 {
@@ -84,27 +95,23 @@ impl Memory for Evm {
         );
         let value = unit_value.0;
         // 如果内存长度不够，自动扩展
-        if self.memory.len() < (offset.clone() + BigUint::from(32u8)).to_usize().unwrap() {
-            self.memory.resize(
-                (offset.clone() + BigUint::from(32u8)).to_usize().unwrap(),
-                0,
-            ); // 将不足的部分填充为
+        if self.memory.len() < offset.clone().to_usize().unwrap() {
+            self.memory
+                .resize(offset.clone().to_usize().unwrap() + 1, 0); // 将不足的部分填充为
         }
         let mask = (BigUint::from(1u8) << 3) - BigUint::from(1u8);
-        let low_val:BigUint = value & mask;
+        let low_val: BigUint = value & mask;
         self.memory[offset.clone().to_usize().unwrap()] = low_val.to_u8().unwrap();
+        self.fill_memory();
         //因为一个十六进制数代表4位所以打印的时候把长度设置成64位长度
-        logger.log_memory_store_val(
-            self.memory.clone(),
-            (offset.clone() + BigUint::from(32u8)).to_usize().unwrap(),
-        );
+        logger.log_memory_store_val(self.memory.clone());
     }
 }
 
 #[test]
 fn mstore_test() {
     // let excute_codes = "60ff600152";
-    let excute_codes = "6002602052";
+    let excute_codes = "61ff02600152";
     // let excute_codes = "61ff02601452";
     let bytes = hex::decode(excute_codes).unwrap();
     let mut evm_test = Evm::new(bytes);
@@ -120,4 +127,13 @@ fn mstore8_test() {
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", vec_to_hex_string(evm_test.memory));
+}
+
+#[test]
+fn msize_test() {
+    let excute_codes = "61ff0260015359";
+    // let excute_codes = "61ff0260015259";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
 }

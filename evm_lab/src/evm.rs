@@ -164,6 +164,12 @@ impl Evm {
                 MSTORE8 => {
                     self.mstore8();
                 }
+                MSIZE => {
+                    self.msize();
+                }
+                MLOAD => {
+                    self.mload();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
@@ -216,6 +222,19 @@ impl Evm {
         // 入栈时程序计数器累加，size为入栈元素的个数
         info!("程序计数器:{}(将size个元素入栈，pc+size)", self.pc + size);
         self.pc += size
+    }
+    pub fn fill_memory(&mut self) {
+        // 获取当前内存长度
+        let current_len = self.memory.len();
+
+        // 计算到32的下一个倍数需要的字节数
+        let padding_needed = (32 - (current_len % 32)) % 32;
+
+        // 如果需要填充，则扩展内存
+        if padding_needed > 0 {
+            // 扩展内存，将内存填充到32的倍数
+            self.memory.resize(current_len + padding_needed, 0);
+        }
     }
 }
 

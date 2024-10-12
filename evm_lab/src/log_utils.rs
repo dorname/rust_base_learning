@@ -18,6 +18,11 @@ pub struct LogTemplate {
     is_negative: u8,
 }
 impl LogTemplate {
+    pub fn log_cal(&self) {
+        let a = get_uint256(self.unit_a.clone());
+        info!("{}计算过程:({})", self.op_name, self.op);
+    }
+
     pub fn log_two_cal(&self) {
         let a = get_uint256(self.unit_a.clone());
         let b = get_uint256(self.unit_b.clone());
@@ -50,8 +55,8 @@ impl LogTemplate {
         );
     }
 
-    pub fn log_memory_store_val(&self, memory: Vec<u8>, size: usize) {
-        info!("{}的存储值:{:?}", self.op_name, println_hex(memory, size));
+    pub fn log_memory_store_val(&self, memory: Vec<u8>) {
+        info!("{}的存储值:{:?}", self.op_name, vec_to_hex_string(memory));
     }
 
     pub fn log_real_val(&self) {
@@ -70,6 +75,18 @@ impl LogTemplate {
 
     pub fn set_is_negative(&mut self, is_negative: u8) {
         self.is_negative = is_negative;
+    }
+
+    pub fn new_cal(op_name: String, op: String) -> Self {
+        Self {
+            op_name,
+            op,
+            unit_a: (BigUint::from(0u8), 0),
+            unit_b: (BigUint::from(0u8), 0),
+            unit_c: (BigUint::from(0u8), 0),
+            result: BigUint::from(0u8),
+            is_negative: 0u8,
+        }
     }
 
     pub fn new_two_cal(

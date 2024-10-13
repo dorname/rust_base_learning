@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::const_var::*;
 use crate::ops::traits::*;
 use crate::utils::*;
@@ -15,6 +17,8 @@ pub struct Evm {
     //堆栈
     //每个元素长度为256位（32字节），最大深度为1024元素，但是每个操作只能操作堆栈顶的16个元素
     pub stack: Vec<(BigUint, u8)>,
+    //存储
+    pub storage: HashMap<BigUint, (BigUint, u8)>,
     //内存
     pub memory: Vec<u8>,
 }
@@ -38,6 +42,7 @@ impl Evm {
             pc: 0,
             stack: Vec::<(BigUint, u8)>::new(),
             memory: Vec::<u8>::new(),
+            storage: HashMap::new(),
         }
     }
 
@@ -169,6 +174,12 @@ impl Evm {
                 }
                 MLOAD => {
                     self.mload();
+                }
+                SSTORE => {
+                    self.sstore();
+                }
+                SLOAD => {
+                    self.sload();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

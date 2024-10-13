@@ -24,7 +24,7 @@ impl Memory for Evm {
             panic!("Stack underflow");
         }
         let offset = self.stack.pop().unwrap().0;
-        let info_err = format!("读取便宜位置为{:?}的内存", offset);
+        let info_err = format!("读取偏移位置为{:?}的内存", offset);
         let mut logger = LogTemplate::new_cal("MLOAD".to_owned(), info_err.to_owned());
         logger.log_cal();
         let value = self.memory[offset.to_usize().unwrap()*(self.memory.len()/32)..].to_vec();
@@ -58,12 +58,7 @@ impl Memory for Evm {
     /// 内存写指令
     /// 一个十六进制数代表4位
     /// ```
-    /// use evm_lab::evm::Evm;
     /// use crate::evm::Evm;
-    /// use crate::log_utils::*;
-    /// use crate::ops::traits::*;
-    /// use num_bigint::BigUint;
-    /// use num_traits::{ToPrimitive};
     /// let excute_codes = "61ff02600152";
     /// let bytes = hex::decode(excute_codes).unwrap();
     /// let mut evm_test = Evm::new(bytes);
@@ -113,12 +108,7 @@ impl Memory for Evm {
 
     /// 内存单字节写指令
     /// ```
-    /// use evm_lab::evm::Evm;
     /// use crate::evm::Evm;
-    /// use crate::log_utils::*;
-    /// use crate::ops::traits::*;
-    /// use num_bigint::BigUint;
-    /// use num_traits::{ToPrimitive};
     /// let excute_codes = "61ff02600153";
     /// let bytes = hex::decode(excute_codes).unwrap();
     /// let mut evm_test = Evm::new(bytes);

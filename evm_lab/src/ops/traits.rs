@@ -39,3 +39,9 @@ pub trait Memory {
     fn msize(&mut self);
     fn mstore8(&mut self);
 }
+
+
+pub trait Storage {
+    fn sstore(&mut self);
+    fn sload(&mut self);
+}

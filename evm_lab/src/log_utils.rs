@@ -1,3 +1,5 @@
+use std::collections::{hash_map, HashMap};
+
 use crate::{ops::memory, utils::*};
 use log::*;
 use num_bigint::BigUint;
@@ -33,6 +35,18 @@ impl LogTemplate {
             self.op_name, sign_a, a, self.op, sign_b, b
         );
     }
+    
+    pub fn log_storage_cal(&self) {
+        let a = get_uint256(self.unit_a.clone());
+        let b = get_uint256(self.unit_b.clone());
+        let sign_a = if self.unit_a.1 != 0 { "-" } else { "" };
+        let sign_b = if self.unit_b.1 != 0 { "-" } else { "" };
+        info!(
+            "{}插入的键值:({}{:?},{}{:?})",
+            self.op_name, sign_a, a, sign_b, b
+        );
+    }
+
 
     pub fn log_three_cal(&self) {
         let a = get_uint256(self.unit_a.clone());
@@ -54,7 +68,11 @@ impl LogTemplate {
             vec_to_hex_string(self.result.to_bytes_be())
         );
     }
-
+    
+    pub fn log_storage_store_val(&self,hash_map:HashMap<BigUint, (BigUint, u8)>) {
+        info!("{}的存储值:{:?}", self.op_name, hash_map);
+    }
+    
     pub fn log_memory_store_val(&self, memory: Vec<u8>) {
         info!("{}的存储值:{:?}", self.op_name, vec_to_hex_string(memory));
     }

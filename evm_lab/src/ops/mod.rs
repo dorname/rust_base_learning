@@ -6,3 +6,5 @@ pub mod bitwise;
 pub mod traits;
 
 pub mod memory;
+
+pub mod storage;

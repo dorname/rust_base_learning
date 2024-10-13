@@ -45,3 +45,11 @@ pub trait Storage {
     fn sstore(&mut self);
     fn sload(&mut self);
 }
+
+pub trait ControlFlow {
+    fn jump(&mut self);
+    fn jumpi(&mut self);
+    fn pc(&mut self);
+    fn jumpdest(&mut self);
+}
+ 

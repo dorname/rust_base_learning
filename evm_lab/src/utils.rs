@@ -76,6 +76,13 @@ pub fn get_instruction_name(op: u8) -> String {
         MSTORE8 => "MSTORE8".to_string(),
         MSIZE => "MSIZE".to_string(),
         MLOAD => "MLOAD".to_string(),
+        SLOAD => "SLOAD".to_string(),
+        SSTORE => "SSTORE".to_string(),
+        JUMP => "JUMP".to_string(),
+        JUMPI => "JUMPI".to_string(),
+        PC => "PC".to_string(),
+        JUMPDEST => "JUMPDEST".to_string(),
+        STOP => "STOP".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }

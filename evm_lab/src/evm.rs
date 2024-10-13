@@ -13,7 +13,7 @@ pub struct Evm {
     //以太坊虚拟机字节码
     code: Vec<u8>,
     //程序计数器
-    pc: usize,
+    pub pc: usize,
     //堆栈
     //每个元素长度为256位（32字节），最大深度为1024元素，但是每个操作只能操作堆栈顶的16个元素
     pub stack: Vec<(BigUint, u8)>,
@@ -21,6 +21,8 @@ pub struct Evm {
     pub storage: HashMap<BigUint, (BigUint, u8)>,
     //内存
     pub memory: Vec<u8>,
+    // 有效指令
+    pub valid_jumpdest: HashMap<usize,bool>,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -37,12 +39,27 @@ impl Evm {
     /// ```
     pub fn new(code: Vec<u8>) -> Self {
         init_log();
+        
+        // 初始化valid_jumpdest
+        // let mut vaild_jumpdest: HashMap<usize, bool> = HashMap::new();
+        let valid_jumpdest = code.iter().fold((HashMap::<usize,bool>::new(),0 as usize),|(mut mp,idx),&val|{
+            let mut step = 1 as usize;
+            if val == JUMPDEST {
+                mp.insert(idx, true);
+            }
+            if PUSH1 <= val && val <= PUSH32 {
+                step = (val - PUSH1 + 1) as usize;
+            }
+            (mp,idx + step)
+        }).0;
+
         Evm {
             code: code,
             pc: 0,
             stack: Vec::<(BigUint, u8)>::new(),
             memory: Vec::<u8>::new(),
             storage: HashMap::new(),
+            valid_jumpdest: valid_jumpdest,
         }
     }
 
@@ -55,11 +72,12 @@ impl Evm {
     /// ```
     pub fn get_current_instruction(&mut self) -> u8 {
         let &op: &u8 = self.code.get(self.pc).unwrap();
+        info!("当前的程序计数器为{}", self.pc);
         info!("当前执行的指令为{}", get_instruction_name(op));
         //程序计数器累加，代表当前指令已取出并准备执行，计数器指向下一个指令。
         self.pc += 1;
         info!(
-            "程序计数器:{}(获取当前指令后,程序计数器指向下一个元素索引故pc+1)",
+            "下一个程序计数器值:{}(获取当前指令后,程序计数器指向下一个元素索引故pc+1)",
             self.pc
         );
         return op.clone();
@@ -180,6 +198,22 @@ impl Evm {
                 }
                 SLOAD => {
                     self.sload();
+                }
+                STOP => {
+                    info!("stop");
+                    break;
+                }
+                JUMPDEST => {
+                    self.jumpdest();
+                }
+                JUMP => {
+                    self.jump();
+                }
+                JUMPI => {
+                    self.jumpi();
+                }
+                PC => {
+                    self.pc();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

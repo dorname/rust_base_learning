@@ -43,3 +43,11 @@ pub const MSIZE: u8 = 0x59;
 // 存储指令
 pub const SLOAD: u8 = 0x54;
 pub const SSTORE: u8 = 0x55;
+
+// 控制指令
+pub const JUMP: u8 = 0x56;
+pub const JUMPI: u8 = 0x57;
+pub const PC: u8 = 0x58;
+pub const JUMPDEST: u8 = 0x5B;
+pub const STOP: u8 = 0x00;
+

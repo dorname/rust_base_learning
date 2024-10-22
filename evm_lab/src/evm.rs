@@ -22,7 +22,7 @@ pub struct Evm {
     //内存
     pub memory: Vec<u8>,
     // 有效指令
-    pub valid_jumpdest: HashMap<usize,bool>,
+    pub valid_jumpdest: HashMap<usize, bool>,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -39,19 +39,25 @@ impl Evm {
     /// ```
     pub fn new(code: Vec<u8>) -> Self {
         init_log();
-        
+
         // 初始化valid_jumpdest
         // let mut vaild_jumpdest: HashMap<usize, bool> = HashMap::new();
-        let valid_jumpdest = code.iter().fold((HashMap::<usize,bool>::new(),0 as usize),|(mut mp,idx),&val|{
-            let mut step = 1 as usize;
-            if val == JUMPDEST {
-                mp.insert(idx, true);
-            }
-            if PUSH1 <= val && val <= PUSH32 {
-                step = (val - PUSH1 + 1) as usize;
-            }
-            (mp,idx + step)
-        }).0;
+        let valid_jumpdest = code
+            .iter()
+            .fold(
+                (HashMap::<usize, bool>::new(), 0 as usize),
+                |(mut mp, idx), &val| {
+                    let mut step = 1 as usize;
+                    if val == JUMPDEST {
+                        mp.insert(idx, true);
+                    }
+                    if PUSH1 <= val && val <= PUSH32 {
+                        step = (val - PUSH1 + 1) as usize;
+                    }
+                    (mp, idx + step)
+                },
+            )
+            .0;
 
         Evm {
             code: code,

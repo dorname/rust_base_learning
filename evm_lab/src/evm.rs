@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::const_var::*;
+use crate::curr_block::*;
 use crate::ops::traits::*;
 use crate::utils::*;
 use hex::decode;
@@ -23,6 +24,8 @@ pub struct Evm {
     pub memory: Vec<u8>,
     // 有效指令
     pub valid_jumpdest: HashMap<usize, bool>,
+
+    pub current_block: Current_Block,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -66,6 +69,7 @@ impl Evm {
             memory: Vec::<u8>::new(),
             storage: HashMap::new(),
             valid_jumpdest: valid_jumpdest,
+            current_block: Current_Block::init(),
         }
     }
 
@@ -220,6 +224,33 @@ impl Evm {
                 }
                 PC => {
                     self.pc();
+                }
+                BLOCKHASH => {
+                    self.blockhash();
+                }
+                COINBASE => {
+                    self.coinbase();
+                }
+                TIMESTAMP => {
+                    self.timestamp();
+                }
+                NUMBER => {
+                    self.number();
+                }
+                PREVRANDAO => {
+                    self.prevrandao();
+                }
+                GASLIMIT => {
+                    self.gaslimit();
+                }
+                CHAINID => {
+                    self.chainid();
+                }
+                SELFBALANCE => {
+                    self.selfbalance();
+                }
+                BASEFEE => {
+                    self.basefee();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

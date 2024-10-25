@@ -40,7 +40,6 @@ pub trait Memory {
     fn mstore8(&mut self);
 }
 
-
 pub trait Storage {
     fn sstore(&mut self);
     fn sload(&mut self);
@@ -52,4 +51,15 @@ pub trait ControlFlow {
     fn pc(&mut self);
     fn jumpdest(&mut self);
 }
- 
+
+pub trait CurrentBlockInfo {
+    fn blockhash(&mut self);
+    fn coinbase(&mut self);
+    fn timestamp(&mut self);
+    fn number(&mut self);
+    fn prevrandao(&mut self);
+    fn gaslimit(&mut self);
+    fn chainid(&mut self);
+    fn selfbalance(&mut self);
+    fn basefee(&mut self);
+}

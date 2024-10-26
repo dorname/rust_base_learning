@@ -63,3 +63,15 @@ pub trait CurrentBlockInfo {
     fn selfbalance(&mut self);
     fn basefee(&mut self);
 }
+
+pub trait Account {
+    fn balance(&mut self);
+    fn extcodesize(&mut self);
+    fn extcodecopy(&mut self);
+    fn extcodehash(&mut self);
+}
+
+pub trait Other {
+    fn sha3(&mut self);
+}
+

@@ -1,6 +1,6 @@
 use std::fmt::format;
-
-use crate::const_var::*;
+use tiny_keccak::{Hasher, Keccak};
+use crate::{const_var::*, fake_db::AccountDb};
 use num_bigint::BigUint;
 
 /// 判断是否是有符号的数据
@@ -32,6 +32,15 @@ pub fn vec_to_hex_string(bytes: Vec<u8>) -> String {
             _ => "err".to_string(),
         })
         .collect::<String>()
+}
+
+
+pub fn keccak256(data: &[u8]) -> [u8; 32] {
+    let mut hasher = Keccak::v256();
+    let mut output = [0u8; 32];
+    hasher.update(data);
+    hasher.finalize(&mut output);
+    output
 }
 
 pub fn println_hex(bytes: Vec<u8>, size: usize) -> String {
@@ -83,6 +92,32 @@ pub fn get_instruction_name(op: u8) -> String {
         PC => "PC".to_string(),
         JUMPDEST => "JUMPDEST".to_string(),
         STOP => "STOP".to_string(),
+        BLOCKHASH => "BLOCKHASH".to_string(),
+        COINBASE => "COINBASE".to_string(),
+        TIMESTAMP => "TIMESTAMP".to_string(),
+        NUMBER => "NUMBER".to_string(),
+        PREVRANDAO => "PREVRANDAO".to_string(),
+        GASLIMIT => "GASLIMIT".to_string(),
+        CHAINID => "CHAINID".to_string(),
+        SELFBALANCE => "SELFBALANCE".to_string(),
+        BASEFEE => "BASEFEE".to_string(),
+        operation if operation >= DUP1 && operation <= DUP16 => {
+            let num = (operation - DUP1 + 1) as usize;
+            format!("DUP{}", num)
+        }
+        operation if operation >= SWAP1 && operation <= SWAP16 => {
+            let num = (operation - SWAP1 + 1) as usize;
+            format!("SWAP{}", num)
+        }
+        SHA3 => "SHA3".to_string(),
+        BALANCE => "BALANCE".to_string(),
+        EXTCODECOPY => "EXTCODECOPY".to_string(),
+        EXTCODEHASH => "EXTCODEHASH".to_string(),
+        EXTCODESIZE => "EXTCODESIZE".to_string(),
         _ => "UNKNOWN".to_string(),
     }
+}
+
+pub fn get_account_db()->AccountDb{
+    AccountDb::mock()
 }

@@ -61,3 +61,18 @@ pub const GASLIMIT: u8 = 0x45;
 pub const CHAINID: u8 = 0x46;
 pub const SELFBALANCE: u8 = 0x47;
 pub const BASEFEE: u8 = 0x48;
+
+// 堆栈指令
+pub const DUP1: u8 = 0x80;
+pub const DUP16: u8 = 0x8F;
+pub const SWAP1: u8 = 0x90;
+pub const SWAP16: u8 = 0x9B;
+
+// sha3 指令
+pub const SHA3: u8 = 0x20;
+
+// 账户指令
+pub const BALANCE:u8 = 0x31;
+pub const EXTCODESIZE:u8 = 0x3B;
+pub const EXTCODECOPY:u8 = 0x3C;
+pub const EXTCODEHASH:u8 = 0x3F;

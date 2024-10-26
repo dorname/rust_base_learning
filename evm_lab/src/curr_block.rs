@@ -1,6 +1,8 @@
+/// TODO
+/// 实现区块链，修改成从链上读取
 use num_bigint::BigUint;
 #[derive(Debug, Clone)]
-pub struct Current_Block {
+pub struct CurrentBlock {
     blockhash: BigUint,
     coinbase: BigUint,
     timestamp: BigUint,
@@ -11,7 +13,7 @@ pub struct Current_Block {
     selfbalance: BigUint,
     basefee: BigUint,
 }
-impl Current_Block {
+impl CurrentBlock {
     pub fn init() -> Self {
         Self {
             blockhash: BigUint::from(0x7527123fc877fe753b3122dc592671bu128),

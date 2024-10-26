@@ -25,7 +25,7 @@ pub struct Evm {
     // 有效指令
     pub valid_jumpdest: HashMap<usize, bool>,
 
-    pub current_block: Current_Block,
+    pub current_block: CurrentBlock,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -42,7 +42,7 @@ impl Evm {
     /// ```
     pub fn new(code: Vec<u8>) -> Self {
         init_log();
-
+        
         // 初始化valid_jumpdest
         // let mut vaild_jumpdest: HashMap<usize, bool> = HashMap::new();
         let valid_jumpdest = code
@@ -69,7 +69,7 @@ impl Evm {
             memory: Vec::<u8>::new(),
             storage: HashMap::new(),
             valid_jumpdest: valid_jumpdest,
-            current_block: Current_Block::init(),
+            current_block: CurrentBlock::init(),
         }
     }
 
@@ -108,6 +108,14 @@ impl Evm {
                 op if (PUSH1 <= op && op <= PUSH32) => {
                     let size = (op - PUSH1 + 1) as usize;
                     self.push(size);
+                }
+                op if (DUP1 <= op && op <= DUP16) => {
+                    let index = (op - DUP1 + 1) as usize;
+                    self.dup(index);
+                }
+                op if (SWAP1 <= op && op <= SWAP16) => {
+                    let index = (op - SWAP1 + 1) as usize;
+                    self.swap(index);
                 }
                 PUSH0 => {
                     self.stack.push((BigUint::from(0u32), 0u8));
@@ -252,6 +260,21 @@ impl Evm {
                 BASEFEE => {
                     self.basefee();
                 }
+                SHA3 => {
+                    self.sha3();
+                }
+                BALANCE => {
+                    self.balance();
+                }
+                EXTCODESIZE => {
+                    self.extcodesize();
+                }
+                EXTCODECOPY => {
+                    self.extcodecopy();
+                }
+                EXTCODEHASH => {
+                    self.extcodehash();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
@@ -305,6 +328,40 @@ impl Evm {
         info!("程序计数器:{}(将size个元素入栈，pc+size)", self.pc + size);
         self.pc += size
     }
+    /// 复制操作
+    /// 操作指令为 80-8F
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let excute_codes = "62ff0080";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.push(0 as usize);
+    /// ```
+    pub fn dup(&mut self,index:usize) {
+        if self.stack.len()< index {
+            panic!("Stack underflow");
+        }
+        info!("复制栈顶元素，并压入栈顶");
+        let top_element = self.stack[self.stack.len()-index].clone();
+        self.stack.push(top_element); 
+    }
+    /// 交换指令
+    /// 操作指令为 90-9F
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let excute_codes = "60016011600291";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.push(0 as usize);
+    /// ```
+    pub fn swap(&mut self,index:usize){
+        if self.stack.len()< index +  1{
+            panic!("Stack underflow");
+        }
+        info!("交换栈顶元素和第{}个元素",index);
+        let len  = self.stack.len();
+        self.stack.swap(len-1,len-index-1);
+    }
     pub fn fill_memory(&mut self) {
         // 获取当前内存长度
         let current_len = self.memory.len();
@@ -342,4 +399,22 @@ fn test_idx() {
     }
     let result: BigUint = BigUint::from(value) << 8;
     println!("PUSH的值为:{}", vec_to_hex_string(result.to_radix_be(16)));
+}
+
+#[test]
+fn test_dup() {
+    let excute_codes = "62ff001180";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+}
+
+#[test]
+fn test_swap() {
+    let excute_codes = "60016011600291";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
 }

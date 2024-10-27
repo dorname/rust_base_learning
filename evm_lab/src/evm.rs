@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::const_var::*;
 use crate::curr_block::*;
 use crate::ops::traits::*;
+use crate::transaction::*;
 use crate::utils::*;
 use hex::decode;
 use log::*;
@@ -26,6 +27,8 @@ pub struct Evm {
     pub valid_jumpdest: HashMap<usize, bool>,
 
     pub current_block: CurrentBlock,
+
+    pub txn: Transaction,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -42,7 +45,7 @@ impl Evm {
     /// ```
     pub fn new(code: Vec<u8>) -> Self {
         init_log();
-        
+
         // 初始化valid_jumpdest
         // let mut vaild_jumpdest: HashMap<usize, bool> = HashMap::new();
         let valid_jumpdest = code
@@ -70,6 +73,7 @@ impl Evm {
             storage: HashMap::new(),
             valid_jumpdest: valid_jumpdest,
             current_block: CurrentBlock::init(),
+            txn: Transaction::mock(),
         }
     }
 
@@ -275,6 +279,36 @@ impl Evm {
                 EXTCODEHASH => {
                     self.extcodehash();
                 }
+                ADDRESS => {
+                    self.address();
+                }
+                ORIGIN => {
+                    self.origin();
+                }
+                CALLER => {
+                    self.caller();
+                }
+                CALLVALUE => {
+                    self.callvalue();
+                }
+                CALLDATALOAD => {
+                    self.calldataload();
+                }
+                CALLDATASIZE => {
+                    self.calldatasize();
+                }
+                CALLDATACOPY => {
+                    self.calldatacopy();
+                }
+                CODESIZE => {
+                    self.codesize();
+                }
+                CODECOPY => {
+                    self.codecopy();
+                }
+                GASPRICE => {
+                    self.gasprice();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
@@ -337,13 +371,13 @@ impl Evm {
     /// let mut evm_test = Evm::new(bytes);
     /// evm_test.push(0 as usize);
     /// ```
-    pub fn dup(&mut self,index:usize) {
-        if self.stack.len()< index {
+    pub fn dup(&mut self, index: usize) {
+        if self.stack.len() < index {
             panic!("Stack underflow");
         }
         info!("复制栈顶元素，并压入栈顶");
-        let top_element = self.stack[self.stack.len()-index].clone();
-        self.stack.push(top_element); 
+        let top_element = self.stack[self.stack.len() - index].clone();
+        self.stack.push(top_element);
     }
     /// 交换指令
     /// 操作指令为 90-9F
@@ -354,13 +388,13 @@ impl Evm {
     /// let mut evm_test = Evm::new(bytes);
     /// evm_test.push(0 as usize);
     /// ```
-    pub fn swap(&mut self,index:usize){
-        if self.stack.len()< index +  1{
+    pub fn swap(&mut self, index: usize) {
+        if self.stack.len() < index + 1 {
             panic!("Stack underflow");
         }
-        info!("交换栈顶元素和第{}个元素",index);
-        let len  = self.stack.len();
-        self.stack.swap(len-1,len-index-1);
+        info!("交换栈顶元素和第{}个元素", index);
+        let len = self.stack.len();
+        self.stack.swap(len - 1, len - index - 1);
     }
     pub fn fill_memory(&mut self) {
         // 获取当前内存长度

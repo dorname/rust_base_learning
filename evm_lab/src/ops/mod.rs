@@ -16,3 +16,5 @@ pub mod current_block_info;
 pub mod other;
 
 pub mod account;
+
+pub mod transaction;

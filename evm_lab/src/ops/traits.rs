@@ -64,7 +64,7 @@ pub trait CurrentBlockInfo {
     fn basefee(&mut self);
 }
 
-pub trait Account {
+pub trait AccountTraits {
     fn balance(&mut self);
     fn extcodesize(&mut self);
     fn extcodecopy(&mut self);
@@ -75,3 +75,15 @@ pub trait Other {
     fn sha3(&mut self);
 }
 
+pub trait TransactionTraits {
+    fn address(&mut self);
+    fn origin(&mut self);
+    fn caller(&mut self);
+    fn callvalue(&mut self);
+    fn calldataload(&mut self);
+    fn calldatasize(&mut self);
+    fn calldatacopy(&mut self);
+    fn codesize(&mut self);
+    fn codecopy(&mut self);
+    fn gasprice(&mut self);
+}

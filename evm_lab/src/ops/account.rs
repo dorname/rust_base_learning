@@ -1,12 +1,12 @@
 use std::io::Read;
 use crate::{evm::Evm};
 use crate::utils::*;
-use crate::ops::traits::Account;
+use crate::ops::traits::AccountTraits;
 use log::{info, logger};
 use num_bigint::BigUint;
 use num_traits::{ToPrimitive};
 /// TODO 后面实现区块链用户部分完善
-impl Account for Evm{
+impl AccountTraits for Evm{
     fn balance(&mut self){
         if self.stack.len() < 1{
             panic!("Stack underflow");

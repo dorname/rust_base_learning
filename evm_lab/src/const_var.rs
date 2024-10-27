@@ -76,3 +76,16 @@ pub const BALANCE:u8 = 0x31;
 pub const EXTCODESIZE:u8 = 0x3B;
 pub const EXTCODECOPY:u8 = 0x3C;
 pub const EXTCODEHASH:u8 = 0x3F;
+
+// 交易指令
+pub const ADDRESS:u8 = 0x30;
+pub const ORIGIN:u8 = 0x32;
+pub const CALLER:u8 = 0x33;
+pub const CALLVALUE:u8 = 0x34;
+pub const CALLDATALOAD:u8 = 0x35;
+pub const CALLDATASIZE:u8 = 0x36;
+pub const CALLDATACOPY:u8 = 0x37;
+pub const CODESIZE:u8 = 0x38;
+pub const CODECOPY:u8 = 0x39;
+pub const GASPRICE:u8 = 0x3a;
+

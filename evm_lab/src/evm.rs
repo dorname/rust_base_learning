@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::const_var::*;
 use crate::curr_block::*;
+use crate::log_entry::LogEntry;
 use crate::ops::traits::*;
 use crate::transaction::*;
 use crate::utils::*;
@@ -29,6 +30,8 @@ pub struct Evm {
     pub current_block: CurrentBlock,
 
     pub txn: Transaction,
+
+    pub logs: Vec<LogEntry>,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -74,6 +77,7 @@ impl Evm {
             valid_jumpdest: valid_jumpdest,
             current_block: CurrentBlock::init(),
             txn: Transaction::mock(),
+            logs: Vec::<LogEntry>::new(),
         }
     }
 
@@ -308,6 +312,9 @@ impl Evm {
                 }
                 GASPRICE => {
                     self.gasprice();
+                }
+                operation if operation >= LOG0 && operation <= LOG4 => {
+                    let index = operation - LOG0;
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

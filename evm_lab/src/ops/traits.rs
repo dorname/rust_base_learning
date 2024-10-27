@@ -73,6 +73,7 @@ pub trait AccountTraits {
 
 pub trait Other {
     fn sha3(&mut self);
+    fn log(&mut self, num_topics: usize);
 }
 
 pub trait TransactionTraits {

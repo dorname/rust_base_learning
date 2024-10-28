@@ -48,3 +48,12 @@ fn test_sha3() {
     evm_test.run();
     println!("{:?}", evm_test.stack);
 }
+
+#[test]
+fn test_log() {
+    let excute_codes = "60aa6000526001601fa0";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.logs);
+}

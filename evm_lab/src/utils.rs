@@ -1,7 +1,7 @@
-use std::fmt::format;
-use tiny_keccak::{Hasher, Keccak};
 use crate::{const_var::*, fake_db::AccountDb};
 use num_bigint::BigUint;
+use std::fmt::format;
+use tiny_keccak::{Hasher, Keccak};
 
 /// 判断是否是有符号的数据
 /// 如果是则返回其补码，否则返回本身
@@ -33,7 +33,6 @@ pub fn vec_to_hex_string(bytes: Vec<u8>) -> String {
         })
         .collect::<String>()
 }
-
 
 pub fn keccak256(data: &[u8]) -> [u8; 32] {
     let mut hasher = Keccak::v256();
@@ -114,10 +113,14 @@ pub fn get_instruction_name(op: u8) -> String {
         EXTCODECOPY => "EXTCODECOPY".to_string(),
         EXTCODEHASH => "EXTCODEHASH".to_string(),
         EXTCODESIZE => "EXTCODESIZE".to_string(),
+        operation if operation >= LOG0 && operation <= LOG4 => {
+            let num = (operation - LOG0) as usize;
+            format!("LOG{}", num)
+        }
         _ => "UNKNOWN".to_string(),
     }
 }
 
-pub fn get_account_db()->AccountDb{
+pub fn get_account_db() -> AccountDb {
     AccountDb::mock()
 }

@@ -314,7 +314,8 @@ impl Evm {
                     self.gasprice();
                 }
                 operation if operation >= LOG0 && operation <= LOG4 => {
-                    let index = operation - LOG0;
+                    let num_topics = operation - LOG0;
+                    self.log(num_topics.into());
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

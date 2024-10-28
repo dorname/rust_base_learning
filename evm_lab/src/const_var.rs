@@ -90,5 +90,5 @@ pub const CODECOPY: u8 = 0x39;
 pub const GASPRICE: u8 = 0x3a;
 
 // 日志指令
-pub const LOG0: u8 = 0xa1;
-pub const LOG4: u8 = 0xa3;
+pub const LOG0: u8 = 0xa0;
+pub const LOG4: u8 = 0xa4;

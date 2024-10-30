@@ -117,6 +117,9 @@ pub fn get_instruction_name(op: u8) -> String {
             let num = (operation - LOG0) as usize;
             format!("LOG{}", num)
         }
+        RETURN => "RETURN".to_string(),
+        RETURNDATACOPY => "RETURNDATACOPY".to_string(),
+        RETURNDATASIZE => "RETURNDATASIZE".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }

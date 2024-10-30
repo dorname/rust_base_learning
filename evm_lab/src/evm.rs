@@ -320,6 +320,15 @@ impl Evm {
                     let num_topics = operation - LOG0;
                     self.log(num_topics.into());
                 }
+                RETURN => {
+                    self.return_fn();
+                }
+                RETURNDATASIZE => {
+                    self.return_datasize();
+                }
+                RETURNDATACOPY => {
+                    self.return_datacopy();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }

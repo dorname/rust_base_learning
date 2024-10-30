@@ -37,6 +37,15 @@ impl Other for Evm {
         let log_entry = LogEntry::init(self.txn.get_this_addr(), data, topics);
         self.logs.push(log_entry);
     }
+    fn return_datacopy(&mut self) {}
+    fn return_datasize(&mut self) {}
+    fn return_fn(&mut self) {
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let mem_offset = get_uint256(self.stack.pop().unwrap());
+        let length = get_uint256(self.stack.pop().unwrap());
+    }
 }
 
 #[test]

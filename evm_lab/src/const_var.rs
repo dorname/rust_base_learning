@@ -92,3 +92,8 @@ pub const GASPRICE: u8 = 0x3a;
 // 日志指令
 pub const LOG0: u8 = 0xa0;
 pub const LOG4: u8 = 0xa4;
+
+// Return指令
+pub const RETURN: u8 = 0xf3;
+pub const RETURNDATASIZE: u8 = 0x3d;
+pub const RETURNDATACOPY: u8 = 0x3e;

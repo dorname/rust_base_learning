@@ -74,6 +74,11 @@ pub trait AccountTraits {
 pub trait Other {
     fn sha3(&mut self);
     fn log(&mut self, num_topics: usize);
+
+    // return 指令
+    fn return_fn(&mut self);
+    fn return_datasize(&mut self);
+    fn return_datacopy(&mut self);
 }
 
 pub trait TransactionTraits {
@@ -88,3 +93,5 @@ pub trait TransactionTraits {
     fn codecopy(&mut self);
     fn gasprice(&mut self);
 }
+
+pub trait Return {}

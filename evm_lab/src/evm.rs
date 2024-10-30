@@ -32,6 +32,8 @@ pub struct Evm {
     pub txn: Transaction,
 
     pub logs: Vec<LogEntry>,
+
+    pub return_data: Vec<u8>,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -78,6 +80,7 @@ impl Evm {
             current_block: CurrentBlock::init(),
             txn: Transaction::mock(),
             logs: Vec::<LogEntry>::new(),
+            return_data: Vec::<u8>::new(),
         }
     }
 

@@ -120,6 +120,8 @@ pub fn get_instruction_name(op: u8) -> String {
         RETURN => "RETURN".to_string(),
         RETURNDATACOPY => "RETURNDATACOPY".to_string(),
         RETURNDATASIZE => "RETURNDATASIZE".to_string(),
+        REVERT => "REVERT".to_string(),
+        INVALID => "INVALID".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }

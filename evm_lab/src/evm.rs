@@ -34,6 +34,8 @@ pub struct Evm {
     pub logs: Vec<LogEntry>,
 
     pub return_data: Vec<u8>,
+
+    pub success: bool,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -81,6 +83,7 @@ impl Evm {
             txn: Transaction::mock(),
             logs: Vec::<LogEntry>::new(),
             return_data: Vec::<u8>::new(),
+            success: true,
         }
     }
 
@@ -334,6 +337,12 @@ impl Evm {
                 }
                 RETURNDATACOPY => {
                     self.return_datacopy();
+                }
+                REVERT => {
+                    self.revert();
+                }
+                INVALID => {
+                    self.invalid();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作

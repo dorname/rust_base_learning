@@ -133,6 +133,34 @@ impl Other for Evm {
             .to_vec();
         self.memory = self.memory[0..mem_offset.to_usize().unwrap()].to_vec();
     }
+    /// revert指令
+    /// 异常情况可以通过该指令将交易回滚
+    /// ```
+    /// let excute_codes = "60a26000526001601ff3";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.stack);
+    /// ```
+    fn revert(&mut self) {
+        if self.stack.len() < 2 {
+            panic!("Stack underflow");
+        }
+        let mem_offset = get_uint256(self.stack.pop().unwrap());
+        let length = get_uint256(self.stack.pop().unwrap());
+
+        let total_len = (&mem_offset + &length).to_usize().unwrap();
+        //如果内存长度不足，拓展内存
+        if self.memory.len() < total_len.clone() {
+            self.memory.resize(total_len.clone(), 0u8);
+        }
+
+        self.return_data = self.memory[mem_offset.to_usize().unwrap()..total_len].to_vec();
+        self.success = false;
+    }
+    fn invalid(&mut self) {
+        self.success = false;
+    }
 }
 
 #[test]
@@ -189,4 +217,13 @@ fn test_returncopy() {
     println!("{:?}", evm_test.return_data);
     println!("{:?}", evm_test.stack);
     println!("{:?}", vec_to_hex_string(evm_test.memory.clone()));
+}
+
+#[test]
+fn test_revert() {
+    let excute_codes = "60aa6000526001601ffd";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let mut evm_test = Evm::new(bytes);
+    evm_test.run();
+    println!("{:?}", vec_to_hex_string(evm_test.return_data));
 }

@@ -79,6 +79,10 @@ pub trait Other {
     fn return_fn(&mut self);
     fn return_datasize(&mut self);
     fn return_datacopy(&mut self);
+
+    // 异常指令
+    fn revert(&mut self);
+    fn invalid(&mut self);
 }
 
 pub trait TransactionTraits {

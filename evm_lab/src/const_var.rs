@@ -97,3 +97,7 @@ pub const LOG4: u8 = 0xa4;
 pub const RETURN: u8 = 0xf3;
 pub const RETURNDATASIZE: u8 = 0x3d;
 pub const RETURNDATACOPY: u8 = 0x3e;
+
+// 异常指令
+pub const REVERT: u8 = 0xfd;
+pub const INVALID: u8 = 0xfe;

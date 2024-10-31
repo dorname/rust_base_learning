@@ -18,3 +18,5 @@ pub mod other;
 pub mod account;
 
 pub mod transaction;
+
+pub mod call;

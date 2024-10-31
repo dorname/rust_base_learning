@@ -1,13 +1,14 @@
 use num_bigint::BigUint;
 use std::collections::HashMap;
 
+#[derive(Debug, Clone)]
 pub struct Account {
     pub balance: BigUint,
     pub nonce: BigUint,
     pub storage: HashMap<BigUint, (BigUint, u8)>,
     pub code: Vec<u8>,
 }
-
+#[derive(Debug, Clone)]
 pub struct AccountDb {
     data: HashMap<String, Account>,
 }
@@ -29,5 +30,8 @@ impl AccountDb {
     }
     pub fn get_account(&self, address: String) -> &Account {
         self.data.get(&address).unwrap()
+    }
+    pub fn get_account_mut(&mut self, address: String) -> &mut Account {
+        self.data.get_mut(&address).unwrap()
     }
 }

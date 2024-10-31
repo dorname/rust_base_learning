@@ -344,6 +344,15 @@ impl Evm {
                 INVALID => {
                     self.invalid();
                 }
+                CALL => {
+                    self.call();
+                }
+                DELEGATECALL => {
+                    self.delegatecall();
+                }
+                STATICCALL => {
+                    self.staticcall();
+                }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }

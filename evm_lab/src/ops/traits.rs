@@ -98,4 +98,8 @@ pub trait TransactionTraits {
     fn gasprice(&mut self);
 }
 
-pub trait Return {}
+pub trait Call {
+    fn call(&mut self);
+    fn delegatecall(&mut self);
+    fn staticcall(&mut self);
+}

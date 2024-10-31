@@ -101,3 +101,8 @@ pub const RETURNDATACOPY: u8 = 0x3e;
 // 异常指令
 pub const REVERT: u8 = 0xfd;
 pub const INVALID: u8 = 0xfe;
+
+// 调用指令
+pub const CALL: u8 = 0xf1;
+pub const DELEGATECALL: u8 = 0xf4;
+pub const STATICCALL: u8 = 0xfa;

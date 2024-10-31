@@ -1,3 +1,5 @@
+use std::f64::consts::E;
+
 use crate::ops::traits::Other;
 use crate::utils::*;
 use crate::{evm::Evm, log_entry::LogEntry};
@@ -5,6 +7,14 @@ use log::{info, logger};
 use num_bigint::BigUint;
 use num_traits::ToPrimitive;
 impl Other for Evm {
+    /// sha3指令
+    /// ```
+    /// let excute_codes = "5F5F20";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.stack);
+    /// ```
     fn sha3(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -21,6 +31,14 @@ impl Other for Evm {
         info!("sha3:{:?}", vec_to_hex_string(hash.clone()));
         self.stack.push((BigUint::from_bytes_be(&hash), 0u8));
     }
+    /// log1-log4指令
+    /// ```
+    /// let excute_codes = "60aa6000526001601fa0";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.stack);
+    /// ```
     fn log(&mut self, num_topics: usize) {
         if self.stack.len() < 2 + num_topics {
             panic!("Stack underflow");
@@ -37,6 +55,24 @@ impl Other for Evm {
         let log_entry = LogEntry::init(self.txn.get_this_addr(), data, topics);
         self.logs.push(log_entry);
     }
+    /// datacopy指令
+    /// 将上一轮计算的结果，复制到内存上
+    /// ```
+    /// let excute_codes = "60a26000526001601ff3";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.return_data);
+    /// println!("{:?}", evm_test.stack);
+    /// println!("{:?}", vec_to_hex_string(evm_test.memory.clone()));
+    /// let next_excute_codes = "6001600060003e";
+    /// let next_bytes = hex::decode(next_excute_codes).unwrap();
+    /// evm_test.next_codes(next_bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.return_data);
+    /// println!("{:?}", evm_test.stack);
+    /// println!("{:?}", vec_to_hex_string(evm_test.memory.clone()));
+    /// ```
     fn return_datacopy(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -58,10 +94,28 @@ impl Other for Evm {
                     ..(return_offset + length).to_usize().unwrap()],
             );
     }
+    /// datasize指令
+    /// 查看返回数据的长度
+    /// ```
+    /// let excute_codes = "61aaaa6000526002601ff33d";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.stack);
+    /// ```
     fn return_datasize(&mut self) {
         self.stack
             .push((BigUint::from(self.return_data.len()), 0u8));
     }
+    /// return指令
+    /// 返回数据
+    /// ```
+    /// let excute_codes = "60a26000526001601ff3";
+    /// let bytes = hex::decode(excute_codes).unwrap();
+    /// let mut evm_test = Evm::new(bytes);
+    /// evm_test.run();
+    /// println!("{:?}", evm_test.stack);
+    /// ```
     fn return_fn(&mut self) {
         if self.stack.len() < 2 {
             panic!("Stack underflow");
@@ -74,9 +128,10 @@ impl Other for Evm {
             self.memory
                 .resize((&mem_offset + &length).to_usize().unwrap(), 0u8);
         }
-        self.return_data = self.memory
-            [mem_offset.to_usize().unwrap()..(mem_offset + length).to_usize().unwrap()]
+        self.return_data = self.memory[mem_offset.clone().to_usize().unwrap()
+            ..(mem_offset.clone() + length).to_usize().unwrap()]
             .to_vec();
+        self.memory = self.memory[0..mem_offset.to_usize().unwrap()].to_vec();
     }
 }
 
@@ -120,11 +175,18 @@ fn test_returnsize() {
 
 #[test]
 fn test_returncopy() {
-    let excute_codes = "604260005260206000F3";
+    let excute_codes = "60a26000526001601ff3";
     let bytes = hex::decode(excute_codes).unwrap();
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", evm_test.return_data);
     println!("{:?}", evm_test.stack);
-    println!("{:?}", vec_to_hex_string(evm_test.memory));
+    println!("{:?}", vec_to_hex_string(evm_test.memory.clone()));
+    let next_excute_codes = "6001600060003e";
+    let next_bytes = hex::decode(next_excute_codes).unwrap();
+    evm_test.next_codes(next_bytes);
+    evm_test.run();
+    println!("{:?}", evm_test.return_data);
+    println!("{:?}", evm_test.stack);
+    println!("{:?}", vec_to_hex_string(evm_test.memory.clone()));
 }

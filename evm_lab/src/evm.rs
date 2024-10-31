@@ -84,6 +84,12 @@ impl Evm {
         }
     }
 
+    /// 合约间调用，用于上一组指令执行完后，保留返回的结果并执行下一组指令
+    pub fn next_codes(&mut self, code: Vec<u8>) {
+        self.code = code;
+        self.pc = 0;
+    }
+
     /// 获取当前待执行的指令
     /// ```
     /// use evm_lab::evm::Evm;

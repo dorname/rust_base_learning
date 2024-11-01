@@ -122,10 +122,18 @@ pub fn get_instruction_name(op: u8) -> String {
         RETURNDATASIZE => "RETURNDATASIZE".to_string(),
         REVERT => "REVERT".to_string(),
         INVALID => "INVALID".to_string(),
+        CALL => "CALL".to_string(),
+        DELEGATECALL => "DELEGATECALL".to_string(),
+        STATICCALL => "STATICCALL".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }
 
 pub fn get_account_db() -> AccountDb {
     AccountDb::mock()
+}
+
+pub fn get_account_db_for_calltest() -> AccountDb {
+    // AccountDb::mock()
+    AccountDb::mock_for_calltest()
 }

@@ -86,8 +86,51 @@ impl Evm {
             success: true,
         }
     }
+    /// 初始化虚拟机并设置上下文txn
+    /// 后续将new替换成init_evm
+    /// ```
+    /// use evm_lab::evm::Evm;
+    /// let bytes = vec![0x60, 0x01, 0x60, 0x01,0x50];
+    /// let mut evm_test = Evm::new(bytes);
+    /// ```
+    pub fn init_evm(code: Vec<u8>, txn: Transaction) -> Self {
+        // init_log();
 
+        // 初始化valid_jumpdest
+        // let mut vaild_jumpdest: HashMap<usize, bool> = HashMap::new();
+        let valid_jumpdest = code
+            .iter()
+            .fold(
+                (HashMap::<usize, bool>::new(), 0 as usize),
+                |(mut mp, idx), &val| {
+                    let mut step = 1 as usize;
+                    if val == JUMPDEST {
+                        mp.insert(idx, true);
+                    }
+                    if PUSH1 <= val && val <= PUSH32 {
+                        step = (val - PUSH1 + 1) as usize;
+                    }
+                    (mp, idx + step)
+                },
+            )
+            .0;
+
+        Evm {
+            code: code,
+            pc: 0,
+            stack: Vec::<(BigUint, u8)>::new(),
+            memory: Vec::<u8>::new(),
+            storage: HashMap::new(),
+            valid_jumpdest: valid_jumpdest,
+            current_block: CurrentBlock::init(),
+            txn: txn,
+            logs: Vec::<LogEntry>::new(),
+            return_data: Vec::<u8>::new(),
+            success: true,
+        }
+    }
     /// 合约间调用，用于上一组指令执行完后，保留返回的结果并执行下一组指令
+    /// 仅用于returncopy的测试
     pub fn next_codes(&mut self, code: Vec<u8>) {
         self.code = code;
         self.pc = 0;

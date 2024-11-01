@@ -28,6 +28,30 @@ impl AccountDb {
         );
         Self { data: accounts }
     }
+    pub fn mock_for_calltest() -> Self {
+        let account_1 = Account {
+            balance: BigUint::from(100u8),
+            nonce: BigUint::from(1u8),
+            storage: HashMap::new(),
+            code: hex::decode("").unwrap(),
+        };
+        let account_2 = Account {
+            balance: BigUint::from(0u8),
+            nonce: BigUint::from(0u8),
+            storage: HashMap::new(),
+            code: hex::decode("60426000526001601ff3").unwrap(),
+        };
+        let mut accounts: HashMap<String, Account> = HashMap::new();
+        accounts.insert(
+            "0x9bbfed6889322e016e0a02ee459d306fc19545d8".to_string(),
+            account_1,
+        );
+        accounts.insert(
+            "0x1000000000000000000000000000000000000c42".to_string(),
+            account_2,
+        );
+        Self { data: accounts }
+    }
     pub fn get_account(&self, address: String) -> &Account {
         self.data.get(&address).unwrap()
     }

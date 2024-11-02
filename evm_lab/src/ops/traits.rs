@@ -83,6 +83,9 @@ pub trait Other {
     // 异常指令
     fn revert(&mut self);
     fn invalid(&mut self);
+
+    //gas 指令
+    fn gas(&mut self);
 }
 
 pub trait TransactionTraits {
@@ -102,4 +105,10 @@ pub trait Call {
     fn call(&mut self);
     fn delegatecall(&mut self);
     fn staticcall(&mut self);
+}
+
+pub trait Contract {
+    fn create(&mut self);
+    fn create2(&mut self);
+    fn selfdestruct(&mut self);
 }

@@ -106,3 +106,12 @@ pub const INVALID: u8 = 0xfe;
 pub const CALL: u8 = 0xf1;
 pub const DELEGATECALL: u8 = 0xf4;
 pub const STATICCALL: u8 = 0xfa;
+
+// 合约指令
+pub const CREATE: u8 = 0xf0;
+pub const CREATE2: u8 = 0xf5;
+pub const SELFDESTRUCT: u8 = 0xff;
+
+// GAS指令
+pub const GAS: u8 = 0x5a;
+

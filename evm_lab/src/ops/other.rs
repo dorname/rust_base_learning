@@ -1,11 +1,12 @@
 use std::f64::consts::E;
 
-use crate::ops::traits::Other;
-use crate::utils::*;
+use crate::ops::traits::{CurrentBlockInfo, Other};
+use crate::transaction::Transaction;
+use crate::{evm, utils::*};
 use crate::{evm::Evm, log_entry::LogEntry};
 use log::{info, logger};
 use num_bigint::BigUint;
-use num_traits::ToPrimitive;
+use num_traits::{zero, ToPrimitive};
 impl Other for Evm {
     /// sha3指令
     /// ```
@@ -161,6 +162,10 @@ impl Other for Evm {
     fn invalid(&mut self) {
         self.success = false;
     }
+    fn gas(&mut self) {
+        self.stack
+            .push((self.txn.get_gas_limit() - self.gas_used.clone(), 0u8));
+    }
 }
 
 #[test]
@@ -226,4 +231,33 @@ fn test_revert() {
     let mut evm_test = Evm::new(bytes);
     evm_test.run();
     println!("{:?}", vec_to_hex_string(evm_test.return_data));
+}
+
+#[test]
+fn test_gas() {
+    let excute_codes = "60205a";
+    let bytes = hex::decode(excute_codes).unwrap();
+    let txn = Transaction::init(
+        zero(),
+        BigUint::from(1u8),
+        BigUint::from(100u8),
+        "".to_string(),
+        BigUint::from(10u8),
+        "".to_string(),
+        "0x1000000000000000000000000000000000000c42".to_string(),
+        "0x1000000000000000000000000000000000000c42".to_string(),
+        "0x1000000000000000000000000000000000000c42".to_string(),
+        zero(),
+        zero(),
+        zero(),
+    );
+    evm::init_log();
+    let mut evm_test = Evm::init_evm(bytes, txn);
+    evm_test.run();
+    println!("{:?}", evm_test.stack);
+    println!(
+        "gaslimit={:?},gasused={:?}",
+        evm_test.txn.get_gas_limit(),
+        evm_test.gas_used
+    );
 }

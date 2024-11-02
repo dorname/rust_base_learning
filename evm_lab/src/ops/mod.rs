@@ -20,3 +20,5 @@ pub mod account;
 pub mod transaction;
 
 pub mod call;
+
+pub mod contract;

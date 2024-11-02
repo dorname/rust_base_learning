@@ -9,6 +9,7 @@ use crate::utils::*;
 use hex::decode;
 use log::*;
 use num_bigint::BigUint;
+use num_traits::zero;
 use num_traits::{ToPrimitive, Zero};
 
 #[derive(Debug)]
@@ -36,6 +37,10 @@ pub struct Evm {
     pub return_data: Vec<u8>,
 
     pub success: bool,
+
+    pub is_static: bool,
+
+    pub gas_used: BigUint,
 }
 
 /// 为虚拟机实现其特征行为和方法
@@ -84,6 +89,8 @@ impl Evm {
             logs: Vec::<LogEntry>::new(),
             return_data: Vec::<u8>::new(),
             success: true,
+            is_static: true,
+            gas_used: zero(),
         }
     }
     /// 初始化虚拟机并设置上下文txn
@@ -127,6 +134,8 @@ impl Evm {
             logs: Vec::<LogEntry>::new(),
             return_data: Vec::<u8>::new(),
             success: true,
+            is_static: true,
+            gas_used: zero(),
         }
     }
     /// 合约间调用，用于上一组指令执行完后，保留返回的结果并执行下一组指令
@@ -155,7 +164,9 @@ impl Evm {
         );
         return op.clone();
     }
-
+    pub fn is_state_change_code(&mut self, code: u8) -> bool {
+        [0xf0, 0xf5, 0xff, 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0x55].contains(&code)
+    }
     /// 执行所有指令
     /// ```
     /// use evm_lab::evm::Evm;
@@ -166,7 +177,14 @@ impl Evm {
     pub fn run(&mut self) {
         while self.pc < self.code.len() {
             let op: u8 = self.get_current_instruction();
-
+            if GAS_COSTS.contains_key(&op) {
+                info!(
+                    "{}:{} gas",
+                    get_instruction_name(op.clone()),
+                    GAS_COSTS.get(&op).unwrap().clone()
+                );
+                self.gas_used += BigUint::from(GAS_COSTS.get(&op).unwrap().clone());
+            }
             match op {
                 op if (PUSH1 <= op && op <= PUSH32) => {
                     let size = (op - PUSH1 + 1) as usize;
@@ -394,11 +412,30 @@ impl Evm {
                     self.delegatecall();
                 }
                 STATICCALL => {
+                    if self.is_state_change_code(op.clone()) && self.is_static {
+                        self.success = false;
+                        panic!("State changing operation detected during STATICCALL!");
+                    }
                     self.staticcall();
+                }
+                CREATE => {
+                    self.create();
+                }
+                CREATE2 => {
+                    self.create2();
+                }
+                SELFDESTRUCT => {
+                    self.selfdestruct();
+                }
+                GAS => {
+                    self.gas();
                 }
                 _ => {
                     // 处理其他未覆盖到的操作
                 }
+            }
+            if &self.gas_used > self.txn.get_gas_limit() {
+                panic!("Out of gas!");
             }
         }
     }
@@ -498,7 +535,7 @@ impl Evm {
     }
 }
 
-fn init_log() {
+pub fn init_log() {
     log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
 }
 

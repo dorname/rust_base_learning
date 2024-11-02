@@ -1,6 +1,11 @@
-use crate::{const_var::*, fake_db::AccountDb};
+use crate::{
+    const_var::*,
+    fake_db::{self, AccountDb},
+};
 use num_bigint::BigUint;
-use std::fmt::format;
+use once_cell::sync::Lazy;
+use std::{collections::HashMap, sync::Mutex};
+use std::{fmt::format, sync::MutexGuard};
 use tiny_keccak::{Hasher, Keccak};
 
 /// 判断是否是有符号的数据
@@ -125,15 +130,129 @@ pub fn get_instruction_name(op: u8) -> String {
         CALL => "CALL".to_string(),
         DELEGATECALL => "DELEGATECALL".to_string(),
         STATICCALL => "STATICCALL".to_string(),
+        CREATE => "CREATE".to_string(),
+        CREATE2 => "CREATE2".to_string(),
+        SELFDESTRUCT => "SELFDESTRUCT".to_string(),
+        GAS => "GAS".to_string(),
         _ => "UNKNOWN".to_string(),
     }
 }
+static FAKE_DB_1: Lazy<Mutex<AccountDb>> = Lazy::new(|| Mutex::new(AccountDb::mock()));
+static FAKE_DB_2: Lazy<Mutex<AccountDb>> = Lazy::new(|| Mutex::new(AccountDb::mock_2()));
 
-pub fn get_account_db() -> AccountDb {
-    AccountDb::mock()
+pub static GAS_COSTS: Lazy<HashMap<u8, u32>> = Lazy::new(|| {
+    let mut m = HashMap::new();
+
+    // 常见堆栈和算术操作
+    m.insert(STOP, 0);
+    m.insert(ADD, 3);
+    m.insert(MUL, 5);
+    m.insert(SUB, 3);
+    m.insert(DIV, 5);
+    m.insert(SDIV, 5);
+    m.insert(MOD, 5);
+    m.insert(SMOD, 5);
+    m.insert(ADDMOD, 8);
+    m.insert(MULMOD, 8);
+    m.insert(EXP, 10); // 动态调整成本
+    m.insert(SIGNEXTEND, 5);
+
+    // 比较与位操作
+    m.insert(LT, 3);
+    m.insert(GT, 3);
+    m.insert(SLT, 3);
+    m.insert(SGT, 3);
+    m.insert(EQ, 3);
+    m.insert(ISZERO, 3);
+    m.insert(AND, 3);
+    m.insert(OR, 3);
+    m.insert(XOR, 3);
+    m.insert(NOT, 3);
+    m.insert(BYTE, 3);
+    m.insert(SHL, 3);
+    m.insert(SHR, 3);
+    m.insert(SAR, 3);
+
+    // SHA3（Keccak256）哈希操作
+    m.insert(SHA3, 30); // 动态部分成本
+
+    // 环境信息
+    m.insert(ADDRESS, 2);
+    m.insert(BALANCE, 100); // 后续硬分叉将可能调整
+    m.insert(ORIGIN, 2);
+    m.insert(CALLER, 2);
+    m.insert(CALLVALUE, 2);
+    m.insert(CALLDATALOAD, 3);
+    m.insert(CALLDATASIZE, 2);
+    m.insert(CALLDATACOPY, 3); // 动态部分成本
+    m.insert(CODESIZE, 2);
+    m.insert(CODECOPY, 3); // 动态部分成本
+    m.insert(GASPRICE, 2);
+    m.insert(EXTCODESIZE, 100);
+    m.insert(EXTCODECOPY, 100); // 动态部分成本
+    m.insert(RETURNDATASIZE, 2);
+    m.insert(RETURNDATACOPY, 3); // 动态部分成本
+    m.insert(EXTCODEHASH, 100);
+
+    // 区块信息
+    m.insert(BLOCKHASH, 20);
+    m.insert(COINBASE, 2);
+    m.insert(TIMESTAMP, 2);
+    m.insert(NUMBER, 2);
+    m.insert(PREVRANDAO, 2);
+    m.insert(GASLIMIT, 2);
+    m.insert(CHAINID, 2);
+    m.insert(SELFBALANCE, 2);
+    m.insert(BASEFEE, 2);
+
+    // 存储操作
+    m.insert(SLOAD, 100);
+    m.insert(SSTORE, 100); // 动态部分成本
+
+    // 流程控制
+    m.insert(JUMP, 8);
+    m.insert(JUMPI, 10);
+    m.insert(PC, 2);
+    m.insert(MSIZE, 2);
+    m.insert(GAS, 2);
+    m.insert(JUMPDEST, 1);
+
+    // 内存操作
+    m.insert(MLOAD, 3);
+    m.insert(MSTORE, 3);
+    m.insert(MSTORE8, 3);
+
+    // 日志操作
+    m.insert(LOG0, 375); // 动态部分成本
+    m.insert(LOG0 + 1, 750); // 动态部分成本
+    m.insert(LOG0 + 2, 1125); // 动态部分成本
+    m.insert(LOG0 + 3, 1500); // 动态部分成本
+    m.insert(LOG0 + 4, 1875); // 动态部分成本
+
+    // 系统操作
+    m.insert(CREATE, 32000);
+    m.insert(CALL, 700); // 动态部分成本
+    m.insert(RETURN, 0); // 动态部分成本
+    m.insert(DELEGATECALL, 700); // 动态部分成本
+    m.insert(CREATE2, 32000); // 动态部分成本
+    m.insert(STATICCALL, 700); // 动态部分成本
+    m.insert(REVERT, 0); // 动态部分成本
+    m.insert(SELFDESTRUCT, 5000); // 动态部分成本
+
+    // 堆栈操作
+    for i in 0u8..=32u8 {
+        m.insert(PUSH0 + i, 3);
+    }
+    for i in 0u8..16u8 {
+        m.insert(DUP1 + i, 3);
+        m.insert(SWAP1 + i, 3);
+    }
+    m
+});
+pub fn get_account_db() -> MutexGuard<'static, AccountDb> {
+    FAKE_DB_1.lock().unwrap()
 }
 
-pub fn get_account_db_for_calltest() -> AccountDb {
-    // AccountDb::mock()
-    AccountDb::mock_for_calltest()
+pub fn get_account_db_2() -> MutexGuard<'static, AccountDb> {
+    FAKE_DB_2.lock().unwrap()
 }

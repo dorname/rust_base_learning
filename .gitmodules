@@ -1,0 +1,6 @@
+[submodule "algorithms_rust"]
+	path = algorithms_rust
+	url = https://github.com/dorname/algorithms_rust.git
+[submodule "mini-evm"]
+	path = mini-evm
+	url = https://github.com/dorname/mini-evm.git

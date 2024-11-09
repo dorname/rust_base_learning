@@ -1,3 +1,5 @@
+use std::vec;
+
 #[test]
 fn closure_test() {
     use std::mem;
@@ -48,4 +50,78 @@ fn closure_test() {
 
     // 在闭包的签名中删除 `move` 会导致闭包以不可变方式借用 `haystack`，因此之后
     // `haystack` 仍然可用，取消上面的注释也不会导致错误。
+}
+
+#[test]
+fn input_closure() {
+    fn apply<F>(f: F)
+    where
+        F: FnOnce(),
+    {
+        f();
+    }
+    use std::mem;
+    let greeting = "hello";
+    let mut farewell = "goodbye".to_string();
+    let diary = || {
+        println!("I said {}.", greeting);
+        farewell.push_str("!!!");
+        println!("Then I screamed {}.", farewell);
+        println!("Now I can sleep. Good night!");
+        mem::drop(farewell);
+    };
+    apply(diary);
+}
+
+#[test]
+fn input_fn_closure() {
+    let y = 4;
+    fn call_me<F: Fn()>(f: F) {
+        f();
+    }
+    fn function() {
+        // error 即使参数换成了FnOnce，也会报错，因为普通函数无法调用转化成闭包的函数，无法捕获参数y
+        // println!("I'm a function!{}", y);
+        println!("I'm a function!");
+    }
+    let x = || println!("I'm a closure!");
+    call_me(x);
+    call_me(function);
+}
+
+#[test]
+fn output_closure() {
+    fn create_fn() -> impl Fn() {
+        let text = "Fn".to_owned();
+        move || println!("This is a: {}", text)
+    }
+
+    fn create_fnmut() -> impl FnMut() {
+        let text = "FnMut".to_owned();
+        move || println!("This is a: {}", text)
+    }
+
+    fn create_fnonce() -> impl FnOnce() {
+        let text = "FnOnce".to_owned();
+        move || println!("This is a: {}", text)
+    }
+    let fn_plain = create_fn();
+    let mut fn_mut = create_fnmut();
+    let fn_once = create_fnonce();
+    fn_plain();
+    fn_mut();
+    fn_once();
+}
+
+#[test]
+fn closure_2() {
+    let vec1 = vec![1, 2, 3];
+    let vec2 = vec![4, 5, 6];
+
+    let mut iter = vec1.iter();
+    let mut into_iter = vec2.into_iter();
+
+    println!("Find 2 in vec1: {:?}", iter.find(|&&x| x == 2));
+
+    println!("Find 2 in vec2: {:?}", into_iter.any(|x| x == 2))
 }

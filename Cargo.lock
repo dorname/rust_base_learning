@@ -856,6 +856,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "mini-db"
+version = "0.1.0"
+
+[[package]]
 name = "mini-redis"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -891,10 +895,6 @@ dependencies = [
  "wasi",
  "windows-sys 0.48.0",
 ]
-
-[[package]]
-name = "my_db"
-version = "0.1.0"
 
 [[package]]
 name = "native-tls"

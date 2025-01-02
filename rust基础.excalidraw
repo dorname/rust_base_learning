@@ -1,0 +1,1046 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "nFb6_woh5xPfvczJQWH2N",
+      "type": "rectangle",
+      "x": 40,
+      "y": 180,
+      "width": 180,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ab",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 750066761,
+      "version": 14,
+      "versionNonce": 1743809609,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "I77SMamZq7qAA_oJHf-CV"
+        },
+        {
+          "id": "mGA17QuCklr139t2VSRGP",
+          "type": "arrow"
+        },
+        {
+          "id": "n6sA7trOBhxATCcY9B3mX",
+          "type": "arrow"
+        },
+        {
+          "id": "ARGWuAemNsyN0b1r0yvtw",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734841231458,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "I77SMamZq7qAA_oJHf-CV",
+      "type": "text",
+      "x": 59.44005584716797,
+      "y": 207.5,
+      "width": 141.11988830566406,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ac",
+      "roundness": null,
+      "seed": 818314217,
+      "version": 49,
+      "versionNonce": 1584621929,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734840838362,
+      "link": null,
+      "locked": false,
+      "text": "rust所有权特性",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "nFb6_woh5xPfvczJQWH2N",
+      "originalText": "rust所有权特性",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "9z3nF_XfJH1IMUOH7THGJ",
+      "type": "rectangle",
+      "x": 300,
+      "y": 80,
+      "width": 160,
+      "height": 60,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ad",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1761766151,
+      "version": 29,
+      "versionNonce": 1335533129,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "gzvtDdwhMyqXbjJGa0dhE"
+        },
+        {
+          "id": "mGA17QuCklr139t2VSRGP",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734841218587,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "gzvtDdwhMyqXbjJGa0dhE",
+      "type": "text",
+      "x": 309.5000457763672,
+      "y": 85,
+      "width": 140.99990844726562,
+      "height": 50,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "adG",
+      "roundness": null,
+      "seed": 1842921001,
+      "version": 69,
+      "versionNonce": 1654822217,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734841178671,
+      "link": null,
+      "locked": false,
+      "text": "每个值都有唯一\n个所有者",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "9z3nF_XfJH1IMUOH7THGJ",
+      "originalText": "每个值都有唯一个所有者",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "aQtBoTyGuCuKi6OfF54iz",
+      "type": "rectangle",
+      "x": 280,
+      "y": 200,
+      "width": 260,
+      "height": 85,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "af",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1645017607,
+      "version": 67,
+      "versionNonce": 1194167911,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "ydUI_h8ZTHJUeO9zS6BgQ"
+        },
+        {
+          "id": "n6sA7trOBhxATCcY9B3mX",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734856429105,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "ydUI_h8ZTHJUeO9zS6BgQ",
+      "type": "text",
+      "x": 289.00008392333984,
+      "y": 205,
+      "width": 241.9998321533203,
+      "height": 75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ag",
+      "roundness": null,
+      "seed": 378413351,
+      "version": 89,
+      "versionNonce": 1197287815,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734856429105,
+      "link": null,
+      "locked": false,
+      "text": "当所有者离开作用域时，值\n会被释放（自动调用 drop\n方法）。",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "aQtBoTyGuCuKi6OfF54iz",
+      "originalText": "当所有者离开作用域时，值会被释放（自动调用 drop 方法）。",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "09HQZxbnh2Y7FihB5Li7z",
+      "type": "rectangle",
+      "x": 280,
+      "y": 340,
+      "width": 160,
+      "height": 60,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ah",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1221804551,
+      "version": 42,
+      "versionNonce": 1197280231,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "sRziK-tYfSh7JIZidovbk"
+        },
+        {
+          "id": "ARGWuAemNsyN0b1r0yvtw",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734856430188,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "sRziK-tYfSh7JIZidovbk",
+      "type": "text",
+      "x": 310.00003814697266,
+      "y": 357.5,
+      "width": 99.99992370605469,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ai",
+      "roundness": null,
+      "seed": 1565223207,
+      "version": 106,
+      "versionNonce": 1606481671,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734856430188,
+      "link": null,
+      "locked": false,
+      "text": "所有权转移",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "09HQZxbnh2Y7FihB5Li7z",
+      "originalText": "所有权转移",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "mGA17QuCklr139t2VSRGP",
+      "type": "arrow",
+      "x": 220,
+      "y": 180,
+      "width": 80,
+      "height": 40,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aj",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1714826471,
+      "version": 8,
+      "versionNonce": 1654322025,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734841218587,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          80,
+          -40
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "nFb6_woh5xPfvczJQWH2N",
+        "focus": 0.05882352941176472,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "9z3nF_XfJH1IMUOH7THGJ",
+        "focus": 0.14285714285714285,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "n6sA7trOBhxATCcY9B3mX",
+      "type": "arrow",
+      "x": 220,
+      "y": 240,
+      "width": 59,
+      "height": 0,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ak",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1948095975,
+      "version": 16,
+      "versionNonce": 457485831,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734856429238,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          59,
+          0
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "nFb6_woh5xPfvczJQWH2N",
+        "focus": 0.5,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "aQtBoTyGuCuKi6OfF54iz",
+        "focus": 0.058823529411764705,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "ARGWuAemNsyN0b1r0yvtw",
+      "type": "arrow",
+      "x": 200,
+      "y": 260,
+      "width": 79,
+      "height": 93.48333333333335,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "al",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 156862983,
+      "version": 29,
+      "versionNonce": 691369191,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734856430877,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          79,
+          93.48333333333335
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "nFb6_woh5xPfvczJQWH2N",
+        "focus": -0.23076923076923078,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "09HQZxbnh2Y7FihB5Li7z",
+        "focus": -0.6363636363636364,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "1KVnvkahxtFw3y2z_b7nh",
+      "type": "text",
+      "x": 340,
+      "y": 520,
+      "width": 799.8795776367188,
+      "height": 75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "am",
+      "roundness": null,
+      "seed": 1259111559,
+      "version": 16,
+      "versionNonce": 821510119,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "q8lT3z3kvxmMFQu7u-ouA",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734869543567,
+      "link": null,
+      "locked": false,
+      "text": "生命周期是 Rust 中用来描述引用在程序中有效的作用范围的概念。它确保引用总是有效\n的，不会出现悬垂引用（dangling references）。Rust 在编译时通过生命周期注解和静态\n分析确保引用在整个生命周期中是安全的。",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "生命周期是 Rust 中用来描述引用在程序中有效的作用范围的概念。它确保引用总是有效的，不会出现悬垂引用（dangling references）。Rust 在编译时通过生命周期注解和静态分析确保引用在整个生命周期中是安全的。",
+      "autoResize": false,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "taf4v8U-w__WqKBnZimqk",
+      "type": "rectangle",
+      "x": 40,
+      "y": 500,
+      "width": 180,
+      "height": 80,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "an",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1465531463,
+      "version": 32,
+      "versionNonce": 1665189991,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "d7oHJATMIaS81W8YzvRP5"
+        },
+        {
+          "id": "q8lT3z3kvxmMFQu7u-ouA",
+          "type": "arrow"
+        },
+        {
+          "id": "c8pVFCN6dJoihUU3PDi44",
+          "type": "arrow"
+        },
+        {
+          "id": "CwFKDNSiuDIYIwdq4-Cwh",
+          "type": "arrow"
+        },
+        {
+          "id": "ckHXqni1LH0KGL2NyvXg_",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734869673560,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "d7oHJATMIaS81W8YzvRP5",
+      "type": "text",
+      "x": 69.44005584716797,
+      "y": 527.5,
+      "width": 121.11988830566406,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ao",
+      "roundness": null,
+      "seed": 559004201,
+      "version": 36,
+      "versionNonce": 1525928809,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734869610822,
+      "link": null,
+      "locked": false,
+      "text": "rust生命周期",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "taf4v8U-w__WqKBnZimqk",
+      "originalText": "rust生命周期",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "q8lT3z3kvxmMFQu7u-ouA",
+      "type": "arrow",
+      "x": 221,
+      "y": 541.4568062873475,
+      "width": 118,
+      "height": 13.949918869126577,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "ap",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1881702921,
+      "version": 67,
+      "versionNonce": 1567896487,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734869610823,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          118,
+          13.949918869126577
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "taf4v8U-w__WqKBnZimqk",
+        "focus": -0.1836734693877551,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "1KVnvkahxtFw3y2z_b7nh",
+        "focus": -0.5483520074073295,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "Ep_czS6aHTyK8fBcJawsR",
+      "type": "text",
+      "x": 340,
+      "y": 640,
+      "width": 785.5997314453125,
+      "height": 50,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aq",
+      "roundness": null,
+      "seed": 1053960745,
+      "version": 32,
+      "versionNonce": 769392873,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "c8pVFCN6dJoihUU3PDi44",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734869634292,
+      "link": null,
+      "locked": false,
+      "text": "生命周期的基本规则： 生命周期主要用于描述引用的作用范围。Rust 编译器通过静态检\n查确保所有引用在有效范围内被使用",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "生命周期的基本规则： 生命周期主要用于描述引用的作用范围。Rust 编译器通过静态检查确保所有引用在有效范围内被使用",
+      "autoResize": false,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "c8pVFCN6dJoihUU3PDi44",
+      "type": "arrow",
+      "x": 200,
+      "y": 580,
+      "width": 139,
+      "height": 87.27126889714043,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "as",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 952290601,
+      "version": 36,
+      "versionNonce": 1335084137,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734869634506,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          139,
+          87.27126889714043
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "taf4v8U-w__WqKBnZimqk",
+        "focus": -0.1789473684210526,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "Ep_czS6aHTyK8fBcJawsR",
+        "focus": -0.9186330090587862,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "vClvLc2_yxHeYKuV_uSgF",
+      "type": "text",
+      "x": 340,
+      "y": 760,
+      "width": 763.5997314453125,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "at",
+      "roundness": null,
+      "seed": 1581826503,
+      "version": 19,
+      "versionNonce": 1133270505,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "CwFKDNSiuDIYIwdq4-Cwh",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734869642314,
+      "link": null,
+      "locked": false,
+      "text": "隐式生命周期： Rust 编译器可以通过一些简单的规则推断大部分情况下的生命周期。",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "隐式生命周期： Rust 编译器可以通过一些简单的规则推断大部分情况下的生命周期。",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "CwFKDNSiuDIYIwdq4-Cwh",
+      "type": "arrow",
+      "x": 160,
+      "y": 580,
+      "width": 180,
+      "height": 180,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "au",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1672609255,
+      "version": 14,
+      "versionNonce": 1532174089,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734869642314,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          180,
+          180
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "taf4v8U-w__WqKBnZimqk",
+        "focus": 0.07692307692307693,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "vClvLc2_yxHeYKuV_uSgF",
+        "focus": -0.9365964785349825,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "jy1yUp2s9Y14scOgMmjw1",
+      "type": "text",
+      "x": 320,
+      "y": 1180,
+      "width": 628.4197998046875,
+      "height": 75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "av",
+      "roundness": null,
+      "seed": 335205001,
+      "version": 82,
+      "versionNonce": 1142470289,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "ckHXqni1LH0KGL2NyvXg_",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1734959784953,
+      "link": null,
+      "locked": false,
+      "text": "显式生命周期： 在复杂场景下，需要显式声明生命周期。\n1、<'a> 声明了一个生命周期参数。\n2、输入参数 x 和 y 的生命周期必须至少与返回值的生命周期一样长。",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "显式生命周期： 在复杂场景下，需要显式声明生命周期。\n1、<'a> 声明了一个生命周期参数。\n2、输入参数 x 和 y 的生命周期必须至少与返回值的生命周期一样长。",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "ckHXqni1LH0KGL2NyvXg_",
+      "type": "arrow",
+      "x": 120,
+      "y": 580,
+      "width": 223.05898160042307,
+      "height": 599,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "aw",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 855474247,
+      "version": 130,
+      "versionNonce": 365280369,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734959784954,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          223.05898160042307,
+          599
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "taf4v8U-w__WqKBnZimqk",
+        "focus": 0.3563218390804597,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "endBinding": {
+        "elementId": "jy1yUp2s9Y14scOgMmjw1",
+        "focus": -0.8434969506492379,
+        "gap": 1,
+        "fixedPoint": null
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "2WQZ81RygMOE-5X2MjcIj",
+      "type": "iframe",
+      "x": 340,
+      "y": 800,
+      "width": 660,
+      "height": 300,
+      "angle": 0,
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b02",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 559655591,
+      "version": 52,
+      "versionNonce": 152312625,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1734959640712,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "generationData": {
+          "status": "done",
+          "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Code Example</title>\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <style>\n        pre {\n            white-space: pre-wrap;\n            word-wrap: break-word;\n        }\n    </style>\n</head>\n<body class=\"bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center\">\n    <div class=\"container mx-auto p-8\">\n        <div class=\"bg-gray-800 rounded-lg shadow-lg p-6\">\n            <h1 class=\"text-2xl font-bold mb-4\">Code Example</h1>\n            <pre class=\"bg-gray-700 p-4 rounded-lg overflow-x-auto\">\n<code class=\"text-green-400\">fn example(x: &i32) -> &i32 {\n    x\n}</code>\n            </pre>\n        </div>\n    </div>\n\n    <script>\n        // You can add any necessary JavaScript here\n    </script>\n</body>\n</html>"
+        }
+      }
+    },
+    {
+      "id": "pfwYOumqnJczaFksGcW1s",
+      "type": "iframe",
+      "x": 340,
+      "y": 1260,
+      "width": 580,
+      "height": 380.00000000000006,
+      "angle": 0,
+      "strokeColor": "transparent",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b03",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1195641823,
+      "version": 65,
+      "versionNonce": 768231423,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1734959787164,
+      "link": null,
+      "locked": false,
+      "customData": {
+        "generationData": {
+          "status": "done",
+          "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Code Syntax Display</title>\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css\">\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js\"></script>\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js\"></script>\n</head>\n<body class=\"bg-gray-900 text-gray-200 min-h-screen flex flex-col\">\n    <header class=\"bg-gray-800 p-4\">\n        <h1 class=\"text-2xl font-bold\">Code Syntax Display</h1>\n    </header>\n\n    <main class=\"flex-grow container mx-auto p-4\">\n        <div class=\"bg-gray-800 rounded-lg shadow-lg p-6\">\n            <pre><code class=\"language-python\">fn longest&lt;'a&gt;(x: &'a str, y: &'a str) -> &'a str:\n    if x.len() > y.len() {\n        x\n    } else {\n        y\n    }</code></pre>\n        </div>\n    </main>\n\n    <footer class=\"bg-gray-800 p-4 text-center\">\n        <p>&copy; 2023 Code Syntax Display. All rights reserved.</p>\n    </footer>\n\n    <script>\n        Prism.highlightAll();\n    </script>\n</body>\n</html>"
+        }
+      }
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "gridStep": 5,
+    "gridModeEnabled": true,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}
